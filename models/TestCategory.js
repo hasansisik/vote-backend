@@ -19,7 +19,7 @@ const TestCategorySchema = new mongoose.Schema({
   },
   color: {
     type: String,
-    required: [true, 'Kategori rengi gereklidir'],
+    required: false, // Made optional for backward compatibility
     trim: true,
   },
   icon: {

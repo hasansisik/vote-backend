@@ -8,6 +8,11 @@ const MenuSchema = new mongoose.Schema(
       required: [true, "Test kategorisi gereklidir"],
       unique: true
     },
+    color: {
+      type: String,
+      required: [true, "Renk gereklidir"],
+      default: '#f97316'
+    },
     isActive: {
       type: Boolean,
       default: true
@@ -17,21 +22,20 @@ const MenuSchema = new mongoose.Schema(
       default: 0
     }
   },
-  { timestamps: true }
+  { 
+    timestamps: true,
+    // Completely disable virtuals
+    toJSON: { virtuals: false },
+    toObject: { virtuals: false }
+  }
 );
 
-// Virtual fields for name, color, and slug from testCategory
-MenuSchema.virtual('name').get(function() {
-  return this.testCategory?.name || '';
-});
+// Explicitly disable all virtuals
+MenuSchema.set('toJSON', { virtuals: false });
+MenuSchema.set('toObject', { virtuals: false });
 
-MenuSchema.virtual('color').get(function() {
-  return this.testCategory?.color || '';
-});
-
-MenuSchema.virtual('slug').get(function() {
-  return this.testCategory?.slug || '';
-});
+// Remove any existing virtuals
+MenuSchema.virtuals = {};
 
 // Static method to get active menus with populated testCategory
 MenuSchema.statics.getActiveMenus = function() {

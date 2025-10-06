@@ -7,7 +7,8 @@ const {
   updateMenu,
   deleteMenu,
   toggleMenuStatus,
-  updateMenuOrder
+  updateMenuOrder,
+  clearAllMenus
 } = require('../controllers/menu');
 const { isAuthenticated, isAdmin } = require('../middleware/authMiddleware');
 
@@ -26,5 +27,6 @@ router.put('/:id', isAuthenticated, isAdmin, updateMenu);
 router.delete('/:id', isAuthenticated, isAdmin, deleteMenu);
 router.patch('/:id/toggle-status', isAuthenticated, isAdmin, toggleMenuStatus);
 router.patch('/update-order', isAuthenticated, isAdmin, updateMenuOrder);
+router.delete('/clear-all', isAuthenticated, isAdmin, clearAllMenus);
 
 module.exports = router;

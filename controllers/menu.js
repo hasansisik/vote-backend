@@ -107,10 +107,16 @@ const getMenu = async (req, res) => {
 // Create menu
 const createMenu = async (req, res) => {
   try {
-    const { testCategoryId, order } = req.body;
+    const { testCategoryId, color, order } = req.body;
+    
+    console.log('Creating menu with data:', { testCategoryId, color, order });
     
     if (!testCategoryId) {
       throw new BadRequestError('Test kategorisi gereklidir');
+    }
+    
+    if (!color) {
+      throw new BadRequestError('Renk gereklidir');
     }
     
     // Check if test category exists
@@ -118,6 +124,8 @@ const createMenu = async (req, res) => {
     if (!testCategory) {
       throw new BadRequestError('Test kategorisi bulunamadı');
     }
+    
+    console.log('Test category found:', testCategory.name);
     
     // Check if menu with this test category already exists
     const existingMenu = await Menu.findOne({ testCategory: testCategoryId });
@@ -133,11 +141,20 @@ const createMenu = async (req, res) => {
       menuOrder = lastMenu ? lastMenu.order + 1 : 1;
     }
     
-    const menu = await Menu.create({
+    console.log('Creating menu with order:', menuOrder);
+    
+    const menuData = {
       testCategory: testCategoryId,
+      color: color,
       order: menuOrder,
       isActive: true
-    });
+    };
+    
+    console.log('Menu data to create:', menuData);
+    
+    const menu = await Menu.create(menuData);
+    
+    console.log('Menu created successfully:', menu._id);
     
     // Populate the testCategory for response
     await menu.populate('testCategory');
@@ -167,7 +184,7 @@ const createMenu = async (req, res) => {
 const updateMenu = async (req, res) => {
   try {
     const { id } = req.params;
-    const { testCategoryId, isActive, order } = req.body;
+    const { testCategoryId, color, isActive, order } = req.body;
     
     const menu = await Menu.findById(id);
     if (!menu) {
@@ -195,6 +212,7 @@ const updateMenu = async (req, res) => {
       menu.testCategory = testCategoryId;
     }
     
+    if (color !== undefined) menu.color = color;
     if (isActive !== undefined) menu.isActive = isActive;
     if (order !== undefined) menu.order = order;
     
@@ -331,6 +349,67 @@ const updateMenuOrder = async (req, res) => {
   }
 };
 
+// Clear all menus (for development)
+const clearAllMenus = async (req, res) => {
+  try {
+    console.log('Starting menu collection cleanup...');
+    
+    // First, delete all documents
+    const deleteResult = await Menu.deleteMany({});
+    console.log('Deleted documents:', deleteResult.deletedCount);
+    
+    // Get the collection name
+    const collectionName = Menu.collection.name;
+    console.log('Collection name:', collectionName);
+    
+    // List all indexes before dropping
+    const indexesBefore = await Menu.collection.indexes();
+    console.log('Indexes before drop:', indexesBefore.map(idx => idx.name));
+    
+    // Drop the entire collection to remove all indexes
+    try {
+      await Menu.collection.drop();
+      console.log('Collection dropped successfully');
+    } catch (dropError) {
+      if (dropError.codeName === 'NamespaceNotFound') {
+        console.log('Collection was already dropped');
+      } else {
+        console.log('Drop error (continuing):', dropError.message);
+      }
+    }
+    
+    // Wait a moment for the drop to complete
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Force recreate the collection with only the necessary indexes
+    try {
+      await Menu.createIndexes();
+      console.log('Indexes recreated successfully');
+    } catch (indexError) {
+      console.log('Index creation error (continuing):', indexError.message);
+    }
+    
+    // List indexes after recreation
+    try {
+      const indexesAfter = await Menu.collection.indexes();
+      console.log('Indexes after recreation:', indexesAfter.map(idx => idx.name));
+    } catch (listError) {
+      console.log('Could not list indexes after recreation:', listError.message);
+    }
+    
+    res.status(200).json({
+      success: true,
+      message: 'Tüm menüler ve indexler temizlendi, koleksiyon yeniden oluşturuldu'
+    });
+  } catch (error) {
+    console.error('Clear menus error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Menüler temizlenirken bir hata oluştu'
+    });
+  }
+};
+
 module.exports = {
   getAllMenus,
   getActiveMenus,
@@ -339,5 +418,6 @@ module.exports = {
   updateMenu,
   deleteMenu,
   toggleMenuStatus,
-  updateMenuOrder
+  updateMenuOrder,
+  clearAllMenus
 };

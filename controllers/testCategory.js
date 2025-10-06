@@ -104,10 +104,12 @@ const getTestCategory = async (req, res) => {
 // Create test category (Admin only)
 const createTestCategory = async (req, res) => {
   try {
-    const { name, description, color, icon, order } = req.body;
+    const { name, description, icon, order } = req.body;
     
-    if (!name || !color) {
-      throw new BadRequestError('Kategori adı ve rengi gereklidir');
+    console.log('Creating test category with data:', { name, description, icon, order });
+    
+    if (!name) {
+      throw new BadRequestError('Kategori adı gereklidir');
     }
     
     // Generate slug from name
@@ -129,15 +131,18 @@ const createTestCategory = async (req, res) => {
       categoryOrder = lastCategory ? lastCategory.order + 1 : 1;
     }
     
-    const category = await TestCategory.create({
+    const categoryData = {
       name,
       slug,
       description,
-      color,
       icon,
       order: categoryOrder,
       isActive: true
-    });
+    };
+    
+    console.log('Creating category with data:', categoryData);
+    
+    const category = await TestCategory.create(categoryData);
     
     res.status(201).json({
       success: true,
@@ -164,7 +169,7 @@ const createTestCategory = async (req, res) => {
 const updateTestCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, color, icon, isActive, order } = req.body;
+    const { name, description, icon, isActive, order } = req.body;
     
     const category = await TestCategory.findById(id);
     if (!category) {
@@ -190,7 +195,6 @@ const updateTestCategory = async (req, res) => {
     }
     
     if (description !== undefined) category.description = description;
-    if (color !== undefined) category.color = color;
     if (icon !== undefined) category.icon = icon;
     if (isActive !== undefined) category.isActive = isActive;
     if (order !== undefined) category.order = order;
@@ -237,7 +241,7 @@ const deleteTestCategory = async (req, res) => {
     
     // Check if category is being used by any tests
     const Test = require('../models/Test');
-    const testsUsingCategory = await Test.countDocuments({ category: category.slug });
+    const testsUsingCategory = await Test.countDocuments ? await Test.countDocuments({ category: category.slug }) : 0;
     
     if (testsUsingCategory > 0) {
       throw new BadRequestError(`Bu kategori ${testsUsingCategory} test tarafından kullanılıyor. Önce bu testleri silin veya kategorilerini değiştirin.`);
