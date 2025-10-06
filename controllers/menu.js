@@ -1,386 +1,335 @@
-const { Menu } = require("../models/Menu");
-const { StatusCodes } = require("http-status-codes");
-const CustomError = require("../errors");
+const Menu = require('../models/Menu');
+const { BadRequestError, NotFoundError } = require('../errors');
 
-// Create Menu (Admin only)
-const createMenu = async (req, res, next) => {
-  try {
-    const {
-      title,
-      url,
-      icon,
-      isDropdown,
-      parent,
-      order,
-      target,
-      type,
-      cssClass,
-      description
-    } = req.body;
-
-    // Validation
-    if (!title) {
-      throw new CustomError.BadRequestError("Menü başlığı gereklidir");
-    }
-
-    // Parent menü kontrolü
-    if (parent) {
-      const parentMenu = await Menu.findById(parent);
-      if (!parentMenu) {
-        throw new CustomError.NotFoundError("Ana menü bulunamadı");
-      }
-      if (parentMenu.parent) {
-        throw new CustomError.BadRequestError("Sadece 2 seviye menü desteklenir");
-      }
-    }
-
-    const menu = new Menu({
-      title,
-      url: url || "#",
-      icon,
-      isDropdown: isDropdown || false,
-      parent: parent || null,
-      order,
-      target: target || '_self',
-      type: type || 'header',
-      cssClass,
-      description,
-      createdBy: req.user.userId
-    });
-
-    await menu.save();
-
-    // Parent menüye alt menü olarak ekle
-    if (parent) {
-      const parentMenu = await Menu.findById(parent);
-      await parentMenu.addChild(menu._id);
-    }
-
-    // Populate ile detayları getir
-    await menu.populate([
-      { path: 'parent', select: 'title url' },
-      { path: 'children', select: 'title url icon order isActive' },
-      { path: 'createdBy', select: 'name surname' }
-    ]);
-
-    res.status(StatusCodes.CREATED).json({
-      success: true,
-      message: "Menü başarıyla oluşturuldu",
-      menu
-    });
-  } catch (error) {
-    next(error);
-  }
+// Helper function to generate slug from Turkish text
+const generateSlug = (text) => {
+  const turkishChars = {
+    'ç': 'c', 'ğ': 'g', 'ı': 'i', 'ö': 'o', 'ş': 's', 'ü': 'u',
+    'Ç': 'C', 'Ğ': 'G', 'İ': 'I', 'Ö': 'O', 'Ş': 'S', 'Ü': 'U'
+  };
+  
+  return text
+    .toLowerCase()
+    .replace(/[çğıöşüÇĞİÖŞÜ]/g, char => turkishChars[char] || char)
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim('-');
 };
 
-// Get All Menus (Public)
-const getAllMenus = async (req, res, next) => {
+// Get all menus (public - no authentication required)
+const getAllMenus = async (req, res) => {
   try {
-    const {
-      type = 'header',
-      includeInactive = false,
-      tree = false
-    } = req.query;
-
-    let menus;
+    const { active, page = 1, limit = 50, sort = 'order' } = req.query;
     
-    if (tree === 'true') {
-      menus = await Menu.getMenuTree(type);
-    } else {
-      menus = await Menu.getByType(type, includeInactive === 'true');
+    const query = {};
+    if (active !== undefined) {
+      query.isActive = active === 'true';
     }
-
-    res.status(StatusCodes.OK).json({
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const menus = await Menu.find(query)
+      .sort({ [sort]: 1, createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+    
+    const total = await Menu.countDocuments(query);
+    
+    res.status(200).json({
       success: true,
+      count: menus.length,
+      total,
       menus
     });
   } catch (error) {
-    next(error);
+    console.error('Get all menus error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Menüler getirilirken bir hata oluştu'
+    });
   }
 };
 
-// Get Main Menus (Public)
-const getMainMenus = async (req, res, next) => {
+// Get active menus (public - no authentication required)
+const getActiveMenus = async (req, res) => {
   try {
-    const { type = 'header' } = req.query;
-
-    const menus = await Menu.getMainMenus(type);
-
-    res.status(StatusCodes.OK).json({
+    const menus = await Menu.find({ isActive: true })
+      .sort({ order: 1, createdAt: -1 });
+    
+    res.status(200).json({
       success: true,
+      count: menus.length,
       menus
     });
   } catch (error) {
-    next(error);
-  }
-};
-
-// Get Single Menu (Public)
-const getSingleMenu = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-
-    const menu = await Menu.findById(id)
-      .populate('parent', 'title url')
-      .populate('children', 'title url icon order isActive target')
-      .populate('createdBy', 'name surname');
-
-    if (!menu) {
-      throw new CustomError.NotFoundError("Menü bulunamadı");
-    }
-
-    res.status(StatusCodes.OK).json({
-      success: true,
-      menu
+    console.error('Get active menus error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Aktif menüler getirilirken bir hata oluştu'
     });
-  } catch (error) {
-    next(error);
   }
 };
 
-// Update Menu (Admin only)
-const updateMenu = async (req, res, next) => {
+// Get single menu
+const getMenu = async (req, res) => {
   try {
     const { id } = req.params;
-    const updates = req.body;
-
-    const menu = await Menu.findById(id);
-    if (!menu) {
-      throw new CustomError.NotFoundError("Menü bulunamadı");
-    }
-
-    // Parent menü kontrolü
-    if (updates.parent) {
-      if (updates.parent === id) {
-        throw new CustomError.BadRequestError("Menü kendisinin alt menüsü olamaz");
-      }
-      
-      const parentMenu = await Menu.findById(updates.parent);
-      if (!parentMenu) {
-        throw new CustomError.NotFoundError("Ana menü bulunamadı");
-      }
-      if (parentMenu.parent) {
-        throw new CustomError.BadRequestError("Sadece 2 seviye menü desteklenir");
-      }
-    }
-
-    // Güncellenebilir alanlar
-    const allowedUpdates = [
-      'title', 'url', 'icon', 'isDropdown', 'parent', 'order', 
-      'isActive', 'target', 'type', 'cssClass', 'description'
-    ];
     
-    allowedUpdates.forEach(field => {
-      if (updates[field] !== undefined) {
-        menu[field] = updates[field];
-      }
-    });
-
-    await menu.save();
-
-    // Parent menü ilişkilerini güncelle
-    if (updates.parent !== undefined) {
-      // Eski parent'tan çıkar
-      if (menu.parent) {
-        const oldParent = await Menu.findById(menu.parent);
-        if (oldParent) {
-          await oldParent.removeChild(menu._id);
-        }
-      }
-      
-      // Yeni parent'a ekle
-      if (updates.parent) {
-        const newParent = await Menu.findById(updates.parent);
-        if (newParent) {
-          await newParent.addChild(menu._id);
-        }
-      }
+    const menu = await Menu.findById(id);
+    if (!menu) {
+      throw new NotFoundError('Menü bulunamadı');
     }
-
-    // Populate ile detayları getir
-    await menu.populate([
-      { path: 'parent', select: 'title url' },
-      { path: 'children', select: 'title url icon order isActive' },
-      { path: 'createdBy', select: 'name surname' }
-    ]);
-
-    res.status(StatusCodes.OK).json({
+    
+    res.status(200).json({
       success: true,
-      message: "Menü başarıyla güncellendi",
       menu
     });
   } catch (error) {
-    next(error);
+    if (error instanceof NotFoundError) {
+      return res.status(404).json({
+        success: false,
+        message: error.message
+      });
+    }
+    
+    console.error('Get menu error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Menü getirilirken bir hata oluştu'
+    });
   }
 };
 
-// Delete Menu (Admin only)
-const deleteMenu = async (req, res, next) => {
+// Create menu
+const createMenu = async (req, res) => {
+  try {
+    const { name, color, order } = req.body;
+    
+    if (!name || !color) {
+      throw new BadRequestError('Menü adı ve rengi gereklidir');
+    }
+    
+    // Generate slug from name
+    const slug = generateSlug(name);
+    
+    // Check if menu with same name or slug already exists
+    const existingMenu = await Menu.findOne({
+      $or: [{ name }, { slug }]
+    });
+    
+    if (existingMenu) {
+      throw new BadRequestError('Bu isimde veya slug\'da bir menü zaten mevcut');
+    }
+    
+    // Get the next order number if not provided
+    let menuOrder = order;
+    if (!menuOrder) {
+      const lastMenu = await Menu.findOne().sort({ order: -1 });
+      menuOrder = lastMenu ? lastMenu.order + 1 : 1;
+    }
+    
+    const menu = await Menu.create({
+      name,
+      slug,
+      color,
+      order: menuOrder,
+      isActive: true
+    });
+    
+    res.status(201).json({
+      success: true,
+      message: 'Menü başarıyla oluşturuldu',
+      menu
+    });
+  } catch (error) {
+    if (error instanceof BadRequestError) {
+      return res.status(400).json({
+        success: false,
+        message: error.message
+      });
+    }
+    
+    console.error('Create menu error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Menü oluşturulurken bir hata oluştu'
+    });
+  }
+};
+
+// Update menu
+const updateMenu = async (req, res) => {
   try {
     const { id } = req.params;
-
+    const { name, color, isActive, order } = req.body;
+    
     const menu = await Menu.findById(id);
     if (!menu) {
-      throw new CustomError.NotFoundError("Menü bulunamadı");
+      throw new NotFoundError('Menü bulunamadı');
     }
-
-    // Alt menüleri kontrol et
-    if (menu.children && menu.children.length > 0) {
-      throw new CustomError.BadRequestError("Alt menüsü olan menü silinemez. Önce alt menüleri silin.");
-    }
-
-    // Parent menüden çıkar
-    if (menu.parent) {
-      const parentMenu = await Menu.findById(menu.parent);
-      if (parentMenu) {
-        await parentMenu.removeChild(menu._id);
+    
+    // Generate new slug if name is being updated
+    if (name && name !== menu.name) {
+      const newSlug = generateSlug(name);
+      
+      // Check if new slug already exists
+      const existingMenu = await Menu.findOne({
+        _id: { $ne: id },
+        $or: [{ name }, { slug: newSlug }]
+      });
+      
+      if (existingMenu) {
+        throw new BadRequestError('Bu isimde veya slug\'da başka bir menü zaten mevcut');
       }
+      
+      menu.name = name;
+      menu.slug = newSlug;
     }
+    
+    if (color !== undefined) menu.color = color;
+    if (isActive !== undefined) menu.isActive = isActive;
+    if (order !== undefined) menu.order = order;
+    
+    await menu.save();
+    
+    res.status(200).json({
+      success: true,
+      message: 'Menü başarıyla güncellendi',
+      menu
+    });
+  } catch (error) {
+    if (error instanceof NotFoundError) {
+      return res.status(404).json({
+        success: false,
+        message: error.message
+      });
+    }
+    
+    if (error instanceof BadRequestError) {
+      return res.status(400).json({
+        success: false,
+        message: error.message
+      });
+    }
+    
+    console.error('Update menu error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Menü güncellenirken bir hata oluştu'
+    });
+  }
+};
 
+// Delete menu
+const deleteMenu = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const menu = await Menu.findById(id);
+    if (!menu) {
+      throw new NotFoundError('Menü bulunamadı');
+    }
+    
     await Menu.findByIdAndDelete(id);
-
-    res.status(StatusCodes.OK).json({
+    
+    res.status(200).json({
       success: true,
-      message: "Menü başarıyla silindi"
+      message: 'Menü başarıyla silindi'
     });
   } catch (error) {
-    next(error);
+    if (error instanceof NotFoundError) {
+      return res.status(404).json({
+        success: false,
+        message: error.message
+      });
+    }
+    
+    console.error('Delete menu error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Menü silinirken bir hata oluştu'
+    });
   }
 };
 
-// Toggle Menu Active Status (Admin only)
-const toggleMenuActive = async (req, res, next) => {
+// Toggle menu status
+const toggleMenuStatus = async (req, res) => {
   try {
     const { id } = req.params;
-
+    
     const menu = await Menu.findById(id);
     if (!menu) {
-      throw new CustomError.NotFoundError("Menü bulunamadı");
+      throw new NotFoundError('Menü bulunamadı');
     }
-
-    await menu.toggleActive();
-
-    res.status(StatusCodes.OK).json({
+    
+    menu.isActive = !menu.isActive;
+    await menu.save();
+    
+    res.status(200).json({
       success: true,
       message: `Menü ${menu.isActive ? 'aktif' : 'pasif'} hale getirildi`,
       menu
     });
   } catch (error) {
-    next(error);
-  }
-};
-
-// Update Menu Order (Admin only)
-const updateMenuOrder = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const { order } = req.body;
-
-    if (order === undefined || order < 1) {
-      throw new CustomError.BadRequestError("Geçerli bir sıralama değeri giriniz");
+    if (error instanceof NotFoundError) {
+      return res.status(404).json({
+        success: false,
+        message: error.message
+      });
     }
-
-    const menu = await Menu.updateOrder(id, order);
-
-    res.status(StatusCodes.OK).json({
-      success: true,
-      message: "Menü sıralaması güncellendi",
-      menu
+    
+    console.error('Toggle menu status error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Menü durumu değiştirilirken bir hata oluştu'
     });
-  } catch (error) {
-    next(error);
   }
 };
 
-// Bulk Update Menu Order (Admin only)
-const bulkUpdateMenuOrder = async (req, res, next) => {
+// Update menu order
+const updateMenuOrder = async (req, res) => {
   try {
-    const { menuOrders } = req.body;
-
-    if (!Array.isArray(menuOrders)) {
-      throw new CustomError.BadRequestError("Menü sıralamaları array formatında olmalıdır");
+    const { menus } = req.body;
+    
+    if (!Array.isArray(menus)) {
+      throw new BadRequestError('Menüler dizisi gereklidir');
     }
-
-    const updatePromises = menuOrders.map(({ id, order }) => 
-      Menu.updateOrder(id, order)
+    
+    // Update each menu's order
+    const updatePromises = menus.map(({ id, order }) =>
+      Menu.findByIdAndUpdate(id, { order }, { new: true })
     );
-
+    
     await Promise.all(updatePromises);
-
-    res.status(StatusCodes.OK).json({
+    
+    res.status(200).json({
       success: true,
-      message: "Menü sıralamaları başarıyla güncellendi"
+      message: 'Menü sıralaması başarıyla güncellendi'
     });
   } catch (error) {
-    next(error);
-  }
-};
-
-// Get Menu Statistics (Admin only)
-const getMenuStats = async (req, res, next) => {
-  try {
-    const stats = await Menu.aggregate([
-      {
-        $group: {
-          _id: '$type',
-          totalMenus: { $sum: 1 },
-          activeMenus: {
-            $sum: { $cond: ['$isActive', 1, 0] }
-          },
-          dropdownMenus: {
-            $sum: { $cond: ['$isDropdown', 1, 0] }
-          },
-          subMenus: {
-            $sum: { $cond: ['$parent', 1, 0] }
-          }
-        }
-      }
-    ]);
-
-    const totalStats = await Menu.aggregate([
-      {
-        $group: {
-          _id: null,
-          totalMenus: { $sum: 1 },
-          activeMenus: {
-            $sum: { $cond: ['$isActive', 1, 0] }
-          },
-          dropdownMenus: {
-            $sum: { $cond: ['$isDropdown', 1, 0] }
-          },
-          subMenus: {
-            $sum: { $cond: ['$parent', 1, 0] }
-          }
-        }
-      }
-    ]);
-
-    res.status(StatusCodes.OK).json({
-      success: true,
-      stats: {
-        byType: stats,
-        total: totalStats[0] || {
-          totalMenus: 0,
-          activeMenus: 0,
-          dropdownMenus: 0,
-          subMenus: 0
-        }
-      }
+    if (error instanceof BadRequestError) {
+      return res.status(400).json({
+        success: false,
+        message: error.message
+      });
+    }
+    
+    console.error('Update menu order error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Menü sıralaması güncellenirken bir hata oluştu'
     });
-  } catch (error) {
-    next(error);
   }
 };
 
 module.exports = {
-  createMenu,
   getAllMenus,
-  getMainMenus,
-  getSingleMenu,
+  getActiveMenus,
+  getMenu,
+  createMenu,
   updateMenu,
   deleteMenu,
-  toggleMenuActive,
-  updateMenuOrder,
-  bulkUpdateMenuOrder,
-  getMenuStats
+  toggleMenuStatus,
+  updateMenuOrder
 };

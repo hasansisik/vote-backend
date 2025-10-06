@@ -1,15 +1,13 @@
 const express = require('express');
 const {
-  createMenu,
   getAllMenus,
-  getMainMenus,
-  getSingleMenu,
+  getActiveMenus,
+  getMenu,
+  createMenu,
   updateMenu,
   deleteMenu,
-  toggleMenuActive,
-  updateMenuOrder,
-  bulkUpdateMenuOrder,
-  getMenuStats
+  toggleMenuStatus,
+  updateMenuOrder
 } = require('../controllers/menu');
 const { isAuthenticated, isAdmin } = require('../middleware/authMiddleware');
 
@@ -17,16 +15,16 @@ const router = express.Router();
 
 // Public routes
 router.get('/', getAllMenus);
-router.get('/main', getMainMenus);
-router.get('/stats', getMenuStats);
-router.get('/:id', getSingleMenu);
+router.get('/active', getActiveMenus);
+
+// Protected routes (require authentication)
+router.get('/:id', isAuthenticated, getMenu);
 
 // Admin only routes
 router.post('/', isAuthenticated, isAdmin, createMenu);
-router.patch('/:id', isAuthenticated, isAdmin, updateMenu);
+router.put('/:id', isAuthenticated, isAdmin, updateMenu);
 router.delete('/:id', isAuthenticated, isAdmin, deleteMenu);
-router.patch('/:id/toggle', isAuthenticated, isAdmin, toggleMenuActive);
-router.patch('/:id/order', isAuthenticated, isAdmin, updateMenuOrder);
-router.patch('/bulk/order', isAuthenticated, isAdmin, bulkUpdateMenuOrder);
+router.patch('/:id/toggle-status', isAuthenticated, isAdmin, toggleMenuStatus);
+router.patch('/update-order', isAuthenticated, isAdmin, updateMenuOrder);
 
 module.exports = router;
