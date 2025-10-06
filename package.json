@@ -1,5 +1,5 @@
 {
-  "name": "promind360",
+  "name": "vote",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,7 @@
     "start": "nodemon index.js",
     "dev": "nodemon"
   },
-  "author": "promind360",
+  "author": "vote",
   "license": "ISC",
   "dependencies": {
     "@radix-ui/react-select": "^2.2.6",
