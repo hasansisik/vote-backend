@@ -1,4 +1,5 @@
 const Menu = require('../models/Menu');
+const TestCategory = require('../models/TestCategory');
 const { BadRequestError, NotFoundError } = require('../errors');
 
 // Helper function to generate slug from Turkish text
@@ -30,6 +31,7 @@ const getAllMenus = async (req, res) => {
     const skip = (parseInt(page) - 1) * parseInt(limit);
     
     const menus = await Menu.find(query)
+      .populate('testCategory')
       .sort({ [sort]: 1, createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit));
@@ -55,6 +57,7 @@ const getAllMenus = async (req, res) => {
 const getActiveMenus = async (req, res) => {
   try {
     const menus = await Menu.find({ isActive: true })
+      .populate('testCategory')
       .sort({ order: 1, createdAt: -1 });
     
     res.status(200).json({
@@ -76,7 +79,7 @@ const getMenu = async (req, res) => {
   try {
     const { id } = req.params;
     
-    const menu = await Menu.findById(id);
+    const menu = await Menu.findById(id).populate('testCategory');
     if (!menu) {
       throw new NotFoundError('Menü bulunamadı');
     }
@@ -104,22 +107,23 @@ const getMenu = async (req, res) => {
 // Create menu
 const createMenu = async (req, res) => {
   try {
-    const { name, color, order } = req.body;
+    const { testCategoryId, order } = req.body;
     
-    if (!name || !color) {
-      throw new BadRequestError('Menü adı ve rengi gereklidir');
+    if (!testCategoryId) {
+      throw new BadRequestError('Test kategorisi gereklidir');
     }
     
-    // Generate slug from name
-    const slug = generateSlug(name);
+    // Check if test category exists
+    const testCategory = await TestCategory.findById(testCategoryId);
+    if (!testCategory) {
+      throw new BadRequestError('Test kategorisi bulunamadı');
+    }
     
-    // Check if menu with same name or slug already exists
-    const existingMenu = await Menu.findOne({
-      $or: [{ name }, { slug }]
-    });
+    // Check if menu with this test category already exists
+    const existingMenu = await Menu.findOne({ testCategory: testCategoryId });
     
     if (existingMenu) {
-      throw new BadRequestError('Bu isimde veya slug\'da bir menü zaten mevcut');
+      throw new BadRequestError('Bu test kategorisi zaten menüde mevcut');
     }
     
     // Get the next order number if not provided
@@ -130,12 +134,13 @@ const createMenu = async (req, res) => {
     }
     
     const menu = await Menu.create({
-      name,
-      slug,
-      color,
+      testCategory: testCategoryId,
       order: menuOrder,
       isActive: true
     });
+    
+    // Populate the testCategory for response
+    await menu.populate('testCategory');
     
     res.status(201).json({
       success: true,
@@ -162,36 +167,39 @@ const createMenu = async (req, res) => {
 const updateMenu = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, color, isActive, order } = req.body;
+    const { testCategoryId, isActive, order } = req.body;
     
     const menu = await Menu.findById(id);
     if (!menu) {
       throw new NotFoundError('Menü bulunamadı');
     }
     
-    // Generate new slug if name is being updated
-    if (name && name !== menu.name) {
-      const newSlug = generateSlug(name);
+    // Update test category if provided
+    if (testCategoryId && testCategoryId !== menu.testCategory.toString()) {
+      // Check if test category exists
+      const testCategory = await TestCategory.findById(testCategoryId);
+      if (!testCategory) {
+        throw new BadRequestError('Test kategorisi bulunamadı');
+      }
       
-      // Check if new slug already exists
+      // Check if another menu with this test category already exists
       const existingMenu = await Menu.findOne({
         _id: { $ne: id },
-        $or: [{ name }, { slug: newSlug }]
+        testCategory: testCategoryId
       });
       
       if (existingMenu) {
-        throw new BadRequestError('Bu isimde veya slug\'da başka bir menü zaten mevcut');
+        throw new BadRequestError('Bu test kategorisi başka bir menüde zaten mevcut');
       }
       
-      menu.name = name;
-      menu.slug = newSlug;
+      menu.testCategory = testCategoryId;
     }
     
-    if (color !== undefined) menu.color = color;
     if (isActive !== undefined) menu.isActive = isActive;
     if (order !== undefined) menu.order = order;
     
     await menu.save();
+    await menu.populate('testCategory');
     
     res.status(200).json({
       success: true,

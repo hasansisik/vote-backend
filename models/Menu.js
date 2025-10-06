@@ -2,21 +2,11 @@ const mongoose = require("mongoose");
 
 const MenuSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: [true, "Menü adı gereklidir"],
-      trim: true,
+    testCategory: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'TestCategory',
+      required: [true, "Test kategorisi gereklidir"],
       unique: true
-    },
-    color: {
-      type: String,
-      required: [true, "Menü rengi gereklidir"],
-      trim: true
-    },
-    slug: {
-      type: String,
-      unique: true,
-      lowercase: true
     },
     isActive: {
       type: Boolean,
@@ -30,31 +20,24 @@ const MenuSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Pre-save middleware to generate slug from Turkish name
-MenuSchema.pre("save", function (next) {
-  if (this.isModified("name") || this.isNew) {
-    // Convert Turkish characters to English equivalents
-    const turkishToEnglish = {
-      'ç': 'c', 'ğ': 'g', 'ı': 'i', 'ö': 'o', 'ş': 's', 'ü': 'u',
-      'Ç': 'C', 'Ğ': 'G', 'İ': 'I', 'Ö': 'O', 'Ş': 'S', 'Ü': 'U'
-    };
-    
-    let slug = this.name
-      .toLowerCase()
-      .replace(/[çğıöşüÇĞİÖŞÜ]/g, (char) => turkishToEnglish[char] || char)
-      .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
-      .replace(/\s+/g, '-') // Replace spaces with hyphens
-      .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
-      .trim('-'); // Remove leading/trailing hyphens
-    
-    this.slug = slug;
-  }
-  next();
+// Virtual fields for name, color, and slug from testCategory
+MenuSchema.virtual('name').get(function() {
+  return this.testCategory?.name || '';
 });
 
-// Static method to get active menus
+MenuSchema.virtual('color').get(function() {
+  return this.testCategory?.color || '';
+});
+
+MenuSchema.virtual('slug').get(function() {
+  return this.testCategory?.slug || '';
+});
+
+// Static method to get active menus with populated testCategory
 MenuSchema.statics.getActiveMenus = function() {
-  return this.find({ isActive: true }).sort({ order: 1, createdAt: 1 });
+  return this.find({ isActive: true })
+    .populate('testCategory')
+    .sort({ order: 1, createdAt: 1 });
 };
 
 // Instance method to toggle active status

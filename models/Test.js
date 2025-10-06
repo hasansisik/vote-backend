@@ -60,8 +60,7 @@ const TestSchema = new mongoose.Schema({
   category: { 
     type: String, 
     required: [true, "Kategori gereklidir"],
-    enum: ['futbol', 'yemek', 'müzik', 'film', 'oyun', 'teknoloji', 'spor', 'diğer'],
-    default: 'diğer'
+    trim: true
   },
   options: [OptionSchema],
   totalVotes: { 
