@@ -1,0 +1,561 @@
+const { Test } = require("../models/Test");
+const { User } = require("../models/User");
+const { StatusCodes } = require("http-status-codes");
+const CustomError = require("../errors");
+
+// Create Test (Admin only)
+const createTest = async (req, res, next) => {
+  try {
+    const {
+      title,
+      description,
+      coverImage,
+      headerText,
+      footerText,
+      category,
+      options
+    } = req.body;
+
+    // Validation
+    if (!title || !category) {
+      throw new CustomError.BadRequestError("Başlık ve kategori gereklidir");
+    }
+
+    if (!options || options.length < 2) {
+      throw new CustomError.BadRequestError("En az 2 seçenek gereklidir");
+    }
+
+    // Her seçenek için validation
+    for (let option of options) {
+      if (!option.title || !option.image) {
+        throw new CustomError.BadRequestError("Her seçenek için başlık ve görsel gereklidir");
+      }
+    }
+
+    const test = new Test({
+      title,
+      description,
+      coverImage,
+      headerText,
+      footerText,
+      category,
+      options,
+      createdBy: req.user.userId
+    });
+
+    await test.save();
+
+    // Kullanıcının oluşturduğu testleri güncelle
+    const user = await User.findById(req.user.userId);
+    await user.createTest(test._id);
+
+    res.status(StatusCodes.CREATED).json({
+      success: true,
+      message: "Test başarıyla oluşturuldu",
+      test
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get All Tests
+const getAllTests = async (req, res, next) => {
+  try {
+    const {
+      category,
+      page = 1,
+      limit = 10,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+      search
+    } = req.query;
+
+    // Build filter
+    const filter = { isActive: true };
+    if (category) filter.category = category;
+    if (search) {
+      filter.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    // Build sort
+    const sort = {};
+    sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
+
+    // Calculate pagination
+    const skip = (page - 1) * limit;
+
+    const tests = await Test.find(filter)
+      .populate('createdBy', 'name surname')
+      .sort(sort)
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const total = await Test.countDocuments(filter);
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      tests,
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(total / limit),
+        totalItems: total,
+        itemsPerPage: parseInt(limit)
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get Single Test
+const getSingleTest = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const test = await Test.findById(id)
+      .populate('createdBy', 'name surname')
+      .populate('voters.user', 'name surname');
+
+    if (!test) {
+      throw new CustomError.NotFoundError("Test bulunamadı");
+    }
+
+    if (!test.isActive) {
+      throw new CustomError.BadRequestError("Bu test aktif değil");
+    }
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      test
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Vote on Test
+const voteOnTest = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { optionId } = req.body;
+
+    if (!optionId) {
+      throw new CustomError.BadRequestError("Seçenek ID gereklidir");
+    }
+
+    const test = await Test.findById(id);
+    if (!test) {
+      throw new CustomError.NotFoundError("Test bulunamadı");
+    }
+
+    if (!test.isActive) {
+      throw new CustomError.BadRequestError("Bu test aktif değil");
+    }
+
+    // Kullanıcı giriş yapmış mı kontrol et
+    let userId = null;
+    if (req.user && req.user.userId) {
+      userId = req.user.userId;
+      
+      // Kullanıcının daha önce oy verip vermediğini kontrol et
+      const hasVoted = test.voters.some(voter => 
+        voter.user.toString() === userId.toString()
+      );
+      
+      if (hasVoted) {
+        throw new CustomError.BadRequestError("Bu teste zaten oy verdiniz");
+      }
+    }
+
+    // Seçeneği bul ve oy ver
+    const option = test.options.id(optionId);
+    if (!option) {
+      throw new CustomError.NotFoundError("Seçenek bulunamadı");
+    }
+
+    option.votes += 1;
+    
+    if (userId) {
+      test.voters.push({ user: userId });
+      
+      // Kullanıcının oy verdiği testleri güncelle
+      const user = await User.findById(userId);
+      await user.voteOnTest(test._id, optionId);
+    }
+
+    await test.save();
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Oy başarıyla verildi",
+      test: {
+        _id: test._id,
+        title: test.title,
+        totalVotes: test.totalVotes,
+        options: test.options
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get Test Results (Ranking)
+const getTestResults = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const test = await Test.findById(id)
+      .populate('createdBy', 'name surname');
+
+    if (!test) {
+      throw new CustomError.NotFoundError("Test bulunamadı");
+    }
+
+    // Seçenekleri oy sayısına göre sırala
+    const sortedOptions = test.options.sort((a, b) => b.votes - a.votes);
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      test: {
+        _id: test._id,
+        title: test.title,
+        description: test.description,
+        headerText: test.headerText,
+        footerText: test.footerText,
+        category: test.category,
+        totalVotes: test.totalVotes,
+        createdBy: test.createdBy,
+        createdAt: test.createdAt
+      },
+      results: sortedOptions.map((option, index) => ({
+        rank: index + 1,
+        _id: option._id,
+        title: option.title,
+        image: option.image,
+        customFields: option.customFields,
+        votes: option.votes,
+        winRate: option.winRate
+      }))
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get Popular Tests
+const getPopularTests = async (req, res, next) => {
+  try {
+    const { limit = 10, category } = req.query;
+
+    const filter = { isActive: true };
+    if (category) filter.category = category;
+
+    const tests = await Test.find(filter)
+      .populate('createdBy', 'name surname')
+      .sort({ totalVotes: -1 })
+      .limit(parseInt(limit));
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      tests: tests.map(test => ({
+        _id: test._id,
+        title: test.title,
+        description: test.description,
+        category: test.category,
+        totalVotes: test.totalVotes,
+        createdBy: test.createdBy,
+        topOption: test.topOption,
+        createdAt: test.createdAt
+      }))
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get Tests by Category
+const getTestsByCategory = async (req, res, next) => {
+  try {
+    const { category } = req.params;
+    const { limit = 10, page = 1 } = req.query;
+
+    const skip = (page - 1) * limit;
+
+    const tests = await Test.find({ 
+      category, 
+      isActive: true 
+    })
+      .populate('createdBy', 'name surname')
+      .sort({ totalVotes: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const total = await Test.countDocuments({ 
+      category, 
+      isActive: true 
+    });
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      tests,
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(total / limit),
+        totalItems: total,
+        itemsPerPage: parseInt(limit)
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Update Test (Admin only)
+const updateTest = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+
+    const test = await Test.findById(id);
+    if (!test) {
+      throw new CustomError.NotFoundError("Test bulunamadı");
+    }
+
+    // Sadece test sahibi veya admin güncelleyebilir
+    if (test.createdBy.toString() !== req.user.userId && req.user.role !== 'admin') {
+      throw new CustomError.UnauthorizedError("Bu testi güncelleme yetkiniz yok");
+    }
+
+    // Güncellenebilir alanlar
+    const allowedUpdates = [
+      'title', 'description', 'coverImage', 'headerText', 'footerText', 'category', 'isActive'
+    ];
+    
+    allowedUpdates.forEach(field => {
+      if (updates[field] !== undefined) {
+        test[field] = updates[field];
+      }
+    });
+
+    // Options alanını güncelle (mevcut oyları koruyarak)
+    if (updates.options && Array.isArray(updates.options)) {
+      // Mevcut options ile yeni options'ı merge et
+      const existingOptions = test.options || [];
+      
+      updates.options.forEach((newOption, index) => {
+        if (existingOptions[index]) {
+          // Mevcut option varsa, sadece title, image ve customFields'i güncelle
+          existingOptions[index].title = newOption.title;
+          existingOptions[index].image = newOption.image;
+          existingOptions[index].customFields = newOption.customFields || [];
+          // votes ve winRate'i koru
+        } else {
+          // Yeni option ekle
+          existingOptions.push({
+            title: newOption.title,
+            image: newOption.image,
+            customFields: newOption.customFields || [],
+            votes: 0,
+            winRate: 0
+          });
+        }
+      });
+      
+      // Fazla options varsa kırp
+      if (existingOptions.length > updates.options.length) {
+        existingOptions.splice(updates.options.length);
+      }
+      
+      test.options = existingOptions;
+    }
+
+    await test.save();
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Test başarıyla güncellendi",
+      test
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Delete Test (Admin only)
+const deleteTest = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const test = await Test.findById(id);
+    if (!test) {
+      throw new CustomError.NotFoundError("Test bulunamadı");
+    }
+
+    // Sadece test sahibi veya admin silebilir
+    if (test.createdBy.toString() !== req.user.userId && req.user.role !== 'admin') {
+      throw new CustomError.UnauthorizedError("Bu testi silme yetkiniz yok");
+    }
+
+    await Test.findByIdAndDelete(id);
+
+    // Kullanıcının oluşturduğu testlerden çıkar
+    await User.updateMany(
+      { createdTests: id },
+      { $pull: { createdTests: id } }
+    );
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Test başarıyla silindi"
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Reset Test Votes (Admin only)
+const resetTestVotes = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const test = await Test.findById(id);
+    if (!test) {
+      throw new CustomError.NotFoundError("Test bulunamadı");
+    }
+
+    // Sadece test sahibi veya admin sıfırlayabilir
+    if (test.createdBy.toString() !== req.user.userId && req.user.role !== 'admin') {
+      throw new CustomError.UnauthorizedError("Bu testi sıfırlama yetkiniz yok");
+    }
+
+    await test.resetVotes();
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Test oyları başarıyla sıfırlandı",
+      test
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get User's Voted Tests
+const getUserVotedTests = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.userId)
+      .populate({
+        path: 'votedTests.test',
+        populate: {
+          path: 'createdBy',
+          select: 'name surname'
+        }
+      });
+
+    if (!user) {
+      throw new CustomError.NotFoundError("Kullanıcı bulunamadı");
+    }
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      votedTests: user.votedTests
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get User's Created Tests
+const getUserCreatedTests = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.userId)
+      .populate({
+        path: 'createdTests',
+        populate: {
+          path: 'createdBy',
+          select: 'name surname'
+        }
+      });
+
+    if (!user) {
+      throw new CustomError.NotFoundError("Kullanıcı bulunamadı");
+    }
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      createdTests: user.createdTests || []
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get Global Rankings
+const getGlobalRankings = async (req, res, next) => {
+  try {
+    const { category, limit = 50 } = req.query;
+
+    const filter = { isActive: true };
+    if (category) filter.category = category;
+
+    // En popüler testleri getir
+    const popularTests = await Test.find(filter)
+      .populate('createdBy', 'name surname')
+      .sort({ totalVotes: -1 })
+      .limit(parseInt(limit));
+
+    // Kategori istatistikleri
+    const categoryStats = await Test.aggregate([
+      { $match: { isActive: true } },
+      {
+        $group: {
+          _id: '$category',
+          totalTests: { $sum: 1 },
+          totalVotes: { $sum: '$totalVotes' },
+          avgVotes: { $avg: '$totalVotes' }
+        }
+      },
+      { $sort: { totalVotes: -1 } }
+    ]);
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      popularTests: popularTests.map(test => ({
+        _id: test._id,
+        title: test.title,
+        category: test.category,
+        totalVotes: test.totalVotes,
+        createdBy: test.createdBy,
+        topOption: test.topOption,
+        createdAt: test.createdAt
+      })),
+      categoryStats
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  createTest,
+  getAllTests,
+  getSingleTest,
+  voteOnTest,
+  getTestResults,
+  getPopularTests,
+  getTestsByCategory,
+  updateTest,
+  deleteTest,
+  resetTestVotes,
+  getUserVotedTests,
+  getUserCreatedTests,
+  getGlobalRankings
+};
+
+
+
