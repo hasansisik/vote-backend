@@ -10,15 +10,11 @@ const MenuSchema = new mongoose.Schema(
     },
     color: {
       type: String,
-      required: [true, "Renk gereklidir"],
-      default: '#f97316'
-    },
-    isActive: {
-      type: Boolean,
-      default: true
+      required: [true, "Renk gereklidir"]
     },
     order: {
       type: Number,
+      required: [true, "Sıralama gereklidir"],
       default: 0
     }
   },
@@ -37,17 +33,11 @@ MenuSchema.set('toObject', { virtuals: false });
 // Remove any existing virtuals
 MenuSchema.virtuals = {};
 
-// Static method to get active menus with populated testCategory
-MenuSchema.statics.getActiveMenus = function() {
-  return this.find({ isActive: true })
+// Static method to get all menus with populated testCategory
+MenuSchema.statics.getAllMenus = function() {
+  return this.find({})
     .populate('testCategory')
     .sort({ order: 1, createdAt: 1 });
-};
-
-// Instance method to toggle active status
-MenuSchema.methods.toggleActive = function() {
-  this.isActive = !this.isActive;
-  return this.save();
 };
 
 const Menu = mongoose.model("Menu", MenuSchema);

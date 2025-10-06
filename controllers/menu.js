@@ -21,22 +21,17 @@ const generateSlug = (text) => {
 // Get all menus (public - no authentication required)
 const getAllMenus = async (req, res) => {
   try {
-    const { active, page = 1, limit = 50, sort = 'order' } = req.query;
-    
-    const query = {};
-    if (active !== undefined) {
-      query.isActive = active === 'true';
-    }
+    const { page = 1, limit = 50, sort = 'order' } = req.query;
     
     const skip = (parseInt(page) - 1) * parseInt(limit);
     
-    const menus = await Menu.find(query)
+    const menus = await Menu.find({})
       .populate('testCategory')
       .sort({ [sort]: 1, createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit));
     
-    const total = await Menu.countDocuments(query);
+    const total = await Menu.countDocuments({});
     
     res.status(200).json({
       success: true,
@@ -53,10 +48,10 @@ const getAllMenus = async (req, res) => {
   }
 };
 
-// Get active menus (public - no authentication required)
+// Get active menus (public - no authentication required) - same as getAllMenus now
 const getActiveMenus = async (req, res) => {
   try {
-    const menus = await Menu.find({ isActive: true })
+    const menus = await Menu.find({})
       .populate('testCategory')
       .sort({ order: 1, createdAt: -1 });
     
@@ -69,7 +64,7 @@ const getActiveMenus = async (req, res) => {
     console.error('Get active menus error:', error);
     res.status(500).json({
       success: false,
-      message: 'Aktif menüler getirilirken bir hata oluştu'
+      message: 'Menüler getirilirken bir hata oluştu'
     });
   }
 };
@@ -136,7 +131,7 @@ const createMenu = async (req, res) => {
     
     // Get the next order number if not provided
     let menuOrder = order;
-    if (!menuOrder) {
+    if (menuOrder === undefined || menuOrder === null) {
       const lastMenu = await Menu.findOne().sort({ order: -1 });
       menuOrder = lastMenu ? lastMenu.order + 1 : 1;
     }
@@ -146,10 +141,9 @@ const createMenu = async (req, res) => {
     const menuData = {
       testCategory: testCategoryId,
       color: color,
-      order: menuOrder,
-      isActive: true
+      order: menuOrder
     };
-    
+  
     console.log('Menu data to create:', menuData);
     
     const menu = await Menu.create(menuData);
@@ -184,7 +178,7 @@ const createMenu = async (req, res) => {
 const updateMenu = async (req, res) => {
   try {
     const { id } = req.params;
-    const { testCategoryId, color, isActive, order } = req.body;
+    const { testCategoryId, color, order } = req.body;
     
     const menu = await Menu.findById(id);
     if (!menu) {
@@ -213,7 +207,6 @@ const updateMenu = async (req, res) => {
     }
     
     if (color !== undefined) menu.color = color;
-    if (isActive !== undefined) menu.isActive = isActive;
     if (order !== undefined) menu.order = order;
     
     await menu.save();
@@ -279,39 +272,6 @@ const deleteMenu = async (req, res) => {
   }
 };
 
-// Toggle menu status
-const toggleMenuStatus = async (req, res) => {
-  try {
-    const { id } = req.params;
-    
-    const menu = await Menu.findById(id);
-    if (!menu) {
-      throw new NotFoundError('Menü bulunamadı');
-    }
-    
-    menu.isActive = !menu.isActive;
-    await menu.save();
-    
-    res.status(200).json({
-      success: true,
-      message: `Menü ${menu.isActive ? 'aktif' : 'pasif'} hale getirildi`,
-      menu
-    });
-  } catch (error) {
-    if (error instanceof NotFoundError) {
-      return res.status(404).json({
-        success: false,
-        message: error.message
-      });
-    }
-    
-    console.error('Toggle menu status error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Menü durumu değiştirilirken bir hata oluştu'
-    });
-  }
-};
 
 // Update menu order
 const updateMenuOrder = async (req, res) => {
@@ -417,7 +377,6 @@ module.exports = {
   createMenu,
   updateMenu,
   deleteMenu,
-  toggleMenuStatus,
   updateMenuOrder,
   clearAllMenus
 };

@@ -6,7 +6,6 @@ const {
   createMenu,
   updateMenu,
   deleteMenu,
-  toggleMenuStatus,
   updateMenuOrder,
   clearAllMenus
 } = require('../controllers/menu');
@@ -25,7 +24,6 @@ router.get('/:id', isAuthenticated, getMenu);
 router.post('/', isAuthenticated, isAdmin, createMenu);
 router.put('/:id', isAuthenticated, isAdmin, updateMenu);
 router.delete('/:id', isAuthenticated, isAdmin, deleteMenu);
-router.patch('/:id/toggle-status', isAuthenticated, isAdmin, toggleMenuStatus);
 router.patch('/update-order', isAuthenticated, isAdmin, updateMenuOrder);
 router.delete('/clear-all', isAuthenticated, isAdmin, clearAllMenus);
 
