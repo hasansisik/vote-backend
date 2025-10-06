@@ -20,21 +20,16 @@ const generateSlug = (text) => {
 // Get all test categories (public)
 const getAllTestCategories = async (req, res) => {
   try {
-    const { active, page = 1, limit = 50, sort = 'order' } = req.query;
-    
-    const query = {};
-    if (active !== undefined) {
-      query.isActive = active === 'true';
-    }
+    const { page = 1, limit = 50 } = req.query;
     
     const skip = (parseInt(page) - 1) * parseInt(limit);
     
-    const categories = await TestCategory.find(query)
-      .sort({ [sort]: 1, name: 1 })
+    const categories = await TestCategory.find({})
+      .sort({ name: 1 })
       .skip(skip)
       .limit(parseInt(limit));
     
-    const total = await TestCategory.countDocuments(query);
+    const total = await TestCategory.countDocuments({});
     
     res.status(200).json({
       success: true,
@@ -51,11 +46,11 @@ const getAllTestCategories = async (req, res) => {
   }
 };
 
-// Get active test categories (public)
+// Get all test categories (public) - renamed from getActiveTestCategories
 const getActiveTestCategories = async (req, res) => {
   try {
-    const categories = await TestCategory.find({ isActive: true })
-      .sort({ order: 1, name: 1 });
+    const categories = await TestCategory.find({})
+      .sort({ name: 1 });
     
     res.status(200).json({
       success: true,
@@ -63,10 +58,10 @@ const getActiveTestCategories = async (req, res) => {
       categories
     });
   } catch (error) {
-    console.error('Get active test categories error:', error);
+    console.error('Get test categories error:', error);
     res.status(500).json({
       success: false,
-      message: 'Aktif test kategorileri getirilirken bir hata oluştu'
+      message: 'Test kategorileri getirilirken bir hata oluştu'
     });
   }
 };
@@ -104,9 +99,9 @@ const getTestCategory = async (req, res) => {
 // Create test category (Admin only)
 const createTestCategory = async (req, res) => {
   try {
-    const { name, description, icon, order } = req.body;
+    const { name } = req.body;
     
-    console.log('Creating test category with data:', { name, description, icon, order });
+    console.log('Creating test category with data:', { name });
     
     if (!name) {
       throw new BadRequestError('Kategori adı gereklidir');
@@ -124,20 +119,9 @@ const createTestCategory = async (req, res) => {
       throw new BadRequestError('Bu isimde veya slug\'da bir kategori zaten mevcut');
     }
     
-    // Get the next order number if not provided
-    let categoryOrder = order;
-    if (!categoryOrder) {
-      const lastCategory = await TestCategory.findOne().sort({ order: -1 });
-      categoryOrder = lastCategory ? lastCategory.order + 1 : 1;
-    }
-    
     const categoryData = {
       name,
-      slug,
-      description,
-      icon,
-      order: categoryOrder,
-      isActive: true
+      slug
     };
     
     console.log('Creating category with data:', categoryData);
@@ -169,7 +153,7 @@ const createTestCategory = async (req, res) => {
 const updateTestCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, icon, isActive, order } = req.body;
+    const { name } = req.body;
     
     const category = await TestCategory.findById(id);
     if (!category) {
@@ -193,11 +177,6 @@ const updateTestCategory = async (req, res) => {
       category.name = name;
       category.slug = newSlug;
     }
-    
-    if (description !== undefined) category.description = description;
-    if (icon !== undefined) category.icon = icon;
-    if (isActive !== undefined) category.isActive = isActive;
-    if (order !== undefined) category.order = order;
     
     await category.save();
     
@@ -276,75 +255,6 @@ const deleteTestCategory = async (req, res) => {
   }
 };
 
-// Toggle test category status (Admin only)
-const toggleTestCategoryStatus = async (req, res) => {
-  try {
-    const { id } = req.params;
-    
-    const category = await TestCategory.findById(id);
-    if (!category) {
-      throw new NotFoundError('Test kategorisi bulunamadı');
-    }
-    
-    category.isActive = !category.isActive;
-    await category.save();
-    
-    res.status(200).json({
-      success: true,
-      message: `Test kategorisi ${category.isActive ? 'aktif' : 'pasif'} hale getirildi`,
-      category
-    });
-  } catch (error) {
-    if (error instanceof NotFoundError) {
-      return res.status(404).json({
-        success: false,
-        message: error.message
-      });
-    }
-    
-    console.error('Toggle test category status error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Test kategori durumu değiştirilirken bir hata oluştu'
-    });
-  }
-};
-
-// Update test category order (Admin only)
-const updateTestCategoryOrder = async (req, res) => {
-  try {
-    const { categories } = req.body;
-    
-    if (!Array.isArray(categories)) {
-      throw new BadRequestError('Kategoriler dizisi gereklidir');
-    }
-    
-    // Update each category's order
-    const updatePromises = categories.map(({ id, order }) =>
-      TestCategory.findByIdAndUpdate(id, { order }, { new: true })
-    );
-    
-    await Promise.all(updatePromises);
-    
-    res.status(200).json({
-      success: true,
-      message: 'Test kategori sıralaması başarıyla güncellendi'
-    });
-  } catch (error) {
-    if (error instanceof BadRequestError) {
-      return res.status(400).json({
-        success: false,
-        message: error.message
-      });
-    }
-    
-    console.error('Update test category order error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Test kategori sıralaması güncellenirken bir hata oluştu'
-    });
-  }
-};
 
 module.exports = {
   getAllTestCategories,
@@ -352,7 +262,5 @@ module.exports = {
   getTestCategory,
   createTestCategory,
   updateTestCategory,
-  deleteTestCategory,
-  toggleTestCategoryStatus,
-  updateTestCategoryOrder
+  deleteTestCategory
 };

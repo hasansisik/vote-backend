@@ -5,9 +5,7 @@ const {
   getTestCategory,
   createTestCategory,
   updateTestCategory,
-  deleteTestCategory,
-  toggleTestCategoryStatus,
-  updateTestCategoryOrder
+  deleteTestCategory
 } = require('../controllers/testCategory');
 const { isAuthenticated, isAdmin } = require('../middleware/authMiddleware');
 
@@ -24,7 +22,5 @@ router.get('/:id', isAuthenticated, getTestCategory);
 router.post('/', isAuthenticated, isAdmin, createTestCategory);
 router.put('/:id', isAuthenticated, isAdmin, updateTestCategory);
 router.delete('/:id', isAuthenticated, isAdmin, deleteTestCategory);
-router.patch('/:id/toggle-status', isAuthenticated, isAdmin, toggleTestCategoryStatus);
-router.patch('/update-order', isAuthenticated, isAdmin, updateTestCategoryOrder);
 
 module.exports = router;

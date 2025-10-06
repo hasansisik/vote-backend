@@ -13,27 +13,6 @@ const TestCategorySchema = new mongoose.Schema({
     unique: true,
     trim: true,
   },
-  description: {
-    type: String,
-    trim: true,
-  },
-  color: {
-    type: String,
-    required: false, // Made optional for backward compatibility
-    trim: true,
-  },
-  icon: {
-    type: String,
-    trim: true,
-  },
-  isActive: {
-    type: Boolean,
-    default: true,
-  },
-  order: {
-    type: Number,
-    default: 0,
-  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -70,17 +49,16 @@ TestCategorySchema.pre('save', function(next) {
 });
 
 // Index for better performance
-TestCategorySchema.index({ isActive: 1, order: 1 });
 TestCategorySchema.index({ slug: 1 });
 
-// Static method to get active categories
-TestCategorySchema.statics.getActiveCategories = function() {
-  return this.find({ isActive: true }).sort({ order: 1, name: 1 });
+// Static method to get all categories
+TestCategorySchema.statics.getAllCategories = function() {
+  return this.find({}).sort({ name: 1 });
 };
 
 // Static method to get category by slug
 TestCategorySchema.statics.getBySlug = function(slug) {
-  return this.findOne({ slug, isActive: true });
+  return this.findOne({ slug });
 };
 
 module.exports = mongoose.model('TestCategory', TestCategorySchema);
