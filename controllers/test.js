@@ -68,11 +68,15 @@ const getAllTests = async (req, res, next) => {
       limit = 10,
       sortBy = 'createdAt',
       sortOrder = 'desc',
-      search
+      search,
+      isActive
     } = req.query;
 
-    // Build filter
-    const filter = { isActive: true };
+    // Build filter - sadece isActive parametresi varsa filtrele
+    const filter = {};
+    if (isActive !== undefined) {
+      filter.isActive = isActive === 'true';
+    }
     if (category) filter.category = category;
     if (search) {
       filter.$or = [
@@ -124,7 +128,8 @@ const getSingleTest = async (req, res, next) => {
       throw new CustomError.NotFoundError("Test bulunamadı");
     }
 
-    if (!test.isActive) {
+    // Admin için aktif olmayan testleri de göster
+    if (!test.isActive && (!req.user || req.user.role !== 'admin')) {
       throw new CustomError.BadRequestError("Bu test aktif değil");
     }
 
@@ -470,30 +475,6 @@ const getUserVotedTests = async (req, res, next) => {
   }
 };
 
-// Get User's Created Tests
-const getUserCreatedTests = async (req, res, next) => {
-  try {
-    const user = await User.findById(req.user.userId)
-      .populate({
-        path: 'createdTests',
-        populate: {
-          path: 'createdBy',
-          select: 'name surname'
-        }
-      });
-
-    if (!user) {
-      throw new CustomError.NotFoundError("Kullanıcı bulunamadı");
-    }
-
-    res.status(StatusCodes.OK).json({
-      success: true,
-      createdTests: user.createdTests || []
-    });
-  } catch (error) {
-    next(error);
-  }
-};
 
 // Get Global Rankings
 const getGlobalRankings = async (req, res, next) => {
@@ -553,7 +534,6 @@ module.exports = {
   deleteTest,
   resetTestVotes,
   getUserVotedTests,
-  getUserCreatedTests,
   getGlobalRankings
 };
 

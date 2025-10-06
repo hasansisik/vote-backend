@@ -11,7 +11,6 @@ const {
   deleteTest,
   resetTestVotes,
   getUserVotedTests,
-  getUserCreatedTests,
   getGlobalRankings
 } = require('../controllers/test');
 const { isAuthenticated, isAdmin } = require('../middleware/authMiddleware');
@@ -29,7 +28,6 @@ router.post('/:id/vote', voteOnTest);
 
 // Authenticated routes
 router.get('/user/voted', isAuthenticated, getUserVotedTests);
-router.get('/user/created', isAuthenticated, isAdmin, getUserCreatedTests);
 
 // Admin only routes
 router.post('/', isAuthenticated, isAdmin, createTest);

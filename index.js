@@ -76,7 +76,7 @@ app.use('/v1/test-categories', testCategoryRouter);
 app.use(notFoundMiddleware);
 app.use(erorHandlerMiddleware);
 
-const port = process.env.PORT || 3040
+const port = process.env.PORT || 5001
 
 const start = async () => {
     try {
