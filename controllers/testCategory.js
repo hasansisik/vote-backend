@@ -99,20 +99,23 @@ const getTestCategory = async (req, res) => {
 // Create test category (Admin only)
 const createTestCategory = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, description } = req.body;
     
-    console.log('Creating test category with data:', { name });
+    console.log('Creating test category with data:', { name, description });
     
-    if (!name) {
-      throw new BadRequestError('Kategori adı gereklidir');
+    if (!name || !name.tr) {
+      throw new BadRequestError('Türkçe kategori adı gereklidir');
     }
     
-    // Generate slug from name
-    const slug = generateSlug(name);
+    // Generate slug from Turkish name
+    const slug = generateSlug(name.tr);
     
     // Check if category with same name or slug already exists
     const existingCategory = await TestCategory.findOne({
-      $or: [{ name }, { slug }]
+      $or: [
+        { 'name.tr': name.tr },
+        { slug }
+      ]
     });
     
     if (existingCategory) {
@@ -120,7 +123,18 @@ const createTestCategory = async (req, res) => {
     }
     
     const categoryData = {
-      name,
+      name: {
+        tr: name.tr,
+        en: name.en || name.tr, // Fallback to Turkish if not provided
+        de: name.de || name.tr, // Fallback to Turkish if not provided
+        fr: name.fr || name.tr, // Fallback to Turkish if not provided
+      },
+      description: {
+        tr: description?.tr || '',
+        en: description?.en || '',
+        de: description?.de || '',
+        fr: description?.fr || '',
+      },
       slug
     };
     
@@ -153,29 +167,50 @@ const createTestCategory = async (req, res) => {
 const updateTestCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name } = req.body;
+    const { name, description } = req.body;
     
     const category = await TestCategory.findById(id);
     if (!category) {
       throw new NotFoundError('Test kategorisi bulunamadı');
     }
     
-    // Generate new slug if name is being updated
-    if (name && name !== category.name) {
-      const newSlug = generateSlug(name);
+    // Update name fields
+    if (name) {
+      // Check if any name is being changed
+      const nameChanged = name.tr !== category.name.tr || 
+                         name.en !== category.name.en || 
+                         name.de !== category.name.de || 
+                         name.fr !== category.name.fr;
       
-      // Check if new slug already exists
-      const existingCategory = await TestCategory.findOne({
-        _id: { $ne: id },
-        $or: [{ name }, { slug: newSlug }]
-      });
-      
-      if (existingCategory) {
-        throw new BadRequestError('Bu isimde veya slug\'da başka bir kategori zaten mevcut');
+      if (nameChanged) {
+        // Check if new Turkish name already exists
+        const existingCategory = await TestCategory.findOne({
+          _id: { $ne: id },
+          'name.tr': name.tr
+        });
+        
+        if (existingCategory) {
+          throw new BadRequestError('Bu isimde başka bir kategori zaten mevcut');
+        }
+        
+        // Update names
+        if (name.tr) category.name.tr = name.tr;
+        if (name.en) category.name.en = name.en;
+        if (name.de) category.name.de = name.de;
+        if (name.fr) category.name.fr = name.fr;
+        
+        // Generate new slug from Turkish name
+        const newSlug = generateSlug(name.tr);
+        category.slug = newSlug;
       }
-      
-      category.name = name;
-      category.slug = newSlug;
+    }
+    
+    // Update description fields
+    if (description) {
+      if (description.tr !== undefined) category.description.tr = description.tr;
+      if (description.en !== undefined) category.description.en = description.en;
+      if (description.de !== undefined) category.description.de = description.de;
+      if (description.fr !== undefined) category.description.fr = description.fr;
     }
     
     await category.save();

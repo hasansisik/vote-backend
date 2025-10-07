@@ -16,6 +16,19 @@ const MenuSchema = new mongoose.Schema(
       type: Number,
       required: [true, "Sıralama gereklidir"],
       default: 0
+    },
+    // i18n support
+    name: {
+      tr: { type: String, required: [true, "Türkçe menü adı gereklidir"] },
+      en: { type: String },
+      de: { type: String },
+      fr: { type: String },
+    },
+    description: {
+      tr: { type: String, default: '' },
+      en: { type: String, default: '' },
+      de: { type: String, default: '' },
+      fr: { type: String, default: '' },
     }
   },
   { 

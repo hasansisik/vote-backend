@@ -1,5 +1,5 @@
 const Menu = require('../models/Menu');
-const TestCategory = require('../models/TestCategory');
+const { TestCategory } = require('../models/TestCategory');
 const { BadRequestError, NotFoundError } = require('../errors');
 
 // Helper function to generate slug from Turkish text
@@ -102,9 +102,9 @@ const getMenu = async (req, res) => {
 // Create menu
 const createMenu = async (req, res) => {
   try {
-    const { testCategoryId, color, order } = req.body;
+    const { testCategoryId, color, order, name, description } = req.body;
     
-    console.log('Creating menu with data:', { testCategoryId, color, order });
+    console.log('Creating menu with data:', { testCategoryId, color, order, name, description });
     
     if (!testCategoryId) {
       throw new BadRequestError('Test kategorisi gereklidir');
@@ -114,13 +114,17 @@ const createMenu = async (req, res) => {
       throw new BadRequestError('Renk gereklidir');
     }
     
+    if (!name || !name.tr) {
+      throw new BadRequestError('Türkçe menü adı gereklidir');
+    }
+    
     // Check if test category exists
     const testCategory = await TestCategory.findById(testCategoryId);
     if (!testCategory) {
       throw new BadRequestError('Test kategorisi bulunamadı');
     }
     
-    console.log('Test category found:', testCategory.name);
+    console.log('Test category found:', testCategory.name.tr);
     
     // Check if menu with this test category already exists
     const existingMenu = await Menu.findOne({ testCategory: testCategoryId });
@@ -141,7 +145,19 @@ const createMenu = async (req, res) => {
     const menuData = {
       testCategory: testCategoryId,
       color: color,
-      order: menuOrder
+      order: menuOrder,
+      name: {
+        tr: name.tr,
+        en: name.en || name.tr, // Fallback to Turkish if not provided
+        de: name.de || name.tr, // Fallback to Turkish if not provided
+        fr: name.fr || name.tr, // Fallback to Turkish if not provided
+      },
+      description: {
+        tr: description?.tr || '',
+        en: description?.en || '',
+        de: description?.de || '',
+        fr: description?.fr || '',
+      }
     };
   
     console.log('Menu data to create:', menuData);
@@ -178,7 +194,7 @@ const createMenu = async (req, res) => {
 const updateMenu = async (req, res) => {
   try {
     const { id } = req.params;
-    const { testCategoryId, color, order } = req.body;
+    const { testCategoryId, color, order, name, description } = req.body;
     
     const menu = await Menu.findById(id);
     if (!menu) {
@@ -208,6 +224,21 @@ const updateMenu = async (req, res) => {
     
     if (color !== undefined) menu.color = color;
     if (order !== undefined) menu.order = order;
+    
+    // Update i18n fields
+    if (name) {
+      if (name.tr) menu.name.tr = name.tr;
+      if (name.en) menu.name.en = name.en;
+      if (name.de) menu.name.de = name.de;
+      if (name.fr) menu.name.fr = name.fr;
+    }
+    
+    if (description) {
+      if (description.tr !== undefined) menu.description.tr = description.tr;
+      if (description.en !== undefined) menu.description.en = description.en;
+      if (description.de !== undefined) menu.description.de = description.de;
+      if (description.fr !== undefined) menu.description.fr = description.fr;
+    }
     
     await menu.save();
     await menu.populate('testCategory');

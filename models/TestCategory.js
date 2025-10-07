@@ -1,11 +1,18 @@
 const mongoose = require('mongoose');
 
 const TestCategorySchema = new mongoose.Schema({
+  // i18n support
   name: {
-    type: String,
-    required: [true, 'Kategori adı gereklidir'],
-    unique: true,
-    trim: true,
+    tr: { type: String, required: [true, 'Türkçe kategori adı gereklidir'], trim: true },
+    en: { type: String, trim: true },
+    de: { type: String, trim: true },
+    fr: { type: String, trim: true },
+  },
+  description: {
+    tr: { type: String, default: '', trim: true },
+    en: { type: String, default: '', trim: true },
+    de: { type: String, default: '', trim: true },
+    fr: { type: String, default: '', trim: true },
   },
   slug: {
     type: String,
@@ -42,7 +49,8 @@ const generateSlug = (text) => {
 // Pre-save middleware to generate slug
 TestCategorySchema.pre('save', function(next) {
   if (this.isModified('name') && !this.slug) {
-    this.slug = generateSlug(this.name);
+    // Use Turkish name for slug generation
+    this.slug = generateSlug(this.name.tr);
   }
   this.updatedAt = Date.now();
   next();
@@ -53,7 +61,7 @@ TestCategorySchema.index({ slug: 1 });
 
 // Static method to get all categories
 TestCategorySchema.statics.getAllCategories = function() {
-  return this.find({}).sort({ name: 1 });
+  return this.find({}).sort({ 'name.tr': 1 });
 };
 
 // Static method to get category by slug
