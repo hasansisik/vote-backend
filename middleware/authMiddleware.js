@@ -43,9 +43,30 @@ const isDashboardAccess = async function (req, res, next) {
   next();
 };
 
+// Optional authentication - doesn't require token but sets req.user if token is valid
+const isOptionalAuthenticated = async function (req, res, next) {
+  if (!req.headers["authorization"]) {
+    // No token provided, continue without setting req.user
+    return next();
+  }
+  
+  const bearerToken = req.headers["authorization"];
+  const token = bearerToken.split(" ")[1];
+  
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
+    if (err) {
+      // Invalid token, continue without setting req.user
+      return next();
+    }
+    req.user = payload;
+    next();
+  });
+};
+
 module.exports = {
   isAuthenticated,
   isUser,
   isAdmin,
-  isDashboardAccess
+  isDashboardAccess,
+  isOptionalAuthenticated
 };

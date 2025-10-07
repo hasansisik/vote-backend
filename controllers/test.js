@@ -190,7 +190,9 @@ const voteOnTest = async (req, res, next) => {
       
       // Kullanıcının oy verdiği testleri güncelle
       const user = await User.findById(userId);
-      await user.voteOnTest(test._id, optionId);
+      if (user) {
+        await user.voteOnTest(test._id, optionId);
+      }
     }
 
     await test.save();
@@ -210,7 +212,7 @@ const voteOnTest = async (req, res, next) => {
   }
 };
 
-// Get Test Results (Ranking)
+// Get Test Results (Ranking) - Updated to use vote sessions
 const getTestResults = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -222,8 +224,50 @@ const getTestResults = async (req, res, next) => {
       throw new CustomError.NotFoundError("Test bulunamadı");
     }
 
-    // Seçenekleri oy sayısına göre sırala
-    const sortedOptions = test.options.sort((a, b) => b.votes - a.votes);
+    // Get all users who voted on this test
+    const usersWhoVoted = await User.find({
+      'votedTests.test': id
+    });
+
+    // Count votes for each option
+    const optionVoteCounts = {};
+    test.options.forEach(option => {
+      optionVoteCounts[option._id.toString()] = 0;
+    });
+
+    // Count votes from user votedTests (authenticated users)
+    usersWhoVoted.forEach(user => {
+      const votedTest = user.votedTests.find(vt => vt.test.toString() === id);
+      if (votedTest && votedTest.selectedOption) {
+        const optionId = votedTest.selectedOption.toString();
+        optionVoteCounts[optionId] = (optionVoteCounts[optionId] || 0) + 1;
+      }
+    });
+
+    // For now, use test.options.votes as the source of truth
+    // This includes both authenticated and guest votes
+    test.options.forEach(option => {
+      const optionId = option._id.toString();
+      optionVoteCounts[optionId] = option.votes;
+    });
+
+    const totalVotes = test.totalVotes || 0;
+
+    // Create results with percentages
+    const results = test.options.map(option => {
+      const voteCount = optionVoteCounts[option._id.toString()] || 0;
+      const percentage = totalVotes > 0 ? (voteCount / totalVotes) * 100 : 0;
+      
+      return {
+        _id: option._id,
+        title: option.title,
+        image: option.image,
+        customFields: option.customFields,
+        votes: voteCount,
+        percentage: Math.round(percentage * 10) / 10, // Round to 1 decimal place
+        winRate: percentage // Use percentage as winRate
+      };
+    }).sort((a, b) => b.votes - a.votes);
 
     res.status(StatusCodes.OK).json({
       success: true,
@@ -234,19 +278,20 @@ const getTestResults = async (req, res, next) => {
         headerText: test.headerText,
         footerText: test.footerText,
         category: test.category,
-        totalVotes: test.totalVotes,
+        totalVotes: totalVotes,
         createdBy: test.createdBy,
         createdAt: test.createdAt
       },
-      results: sortedOptions.map((option, index) => ({
+      results: results.map((result, index) => ({
         rank: index + 1,
-        _id: option._id,
-        title: option.title,
-        image: option.image,
-        customFields: option.customFields,
-        votes: option.votes,
-        winRate: option.winRate
-      }))
+        ...result
+      })),
+      statistics: {
+        totalVotes: totalVotes,
+        completedSessions: totalVotes,
+        userSessions: totalVotes,
+        guestSessions: 0
+      }
     });
   } catch (error) {
     next(error);
@@ -529,9 +574,51 @@ const getUserVotedTests = async (req, res, next) => {
       throw new CustomError.NotFoundError("Kullanıcı bulunamadı");
     }
 
+    // Get detailed test information with options
+    const votedTestsWithDetails = await Promise.all(
+      user.votedTests.map(async (vote) => {
+        const test = await Test.findById(vote.test._id)
+          .populate('createdBy', 'name surname')
+          .select('title description category coverImage totalVotes options createdAt');
+        
+        if (!test) return null;
+
+        // Find the selected option
+        const selectedOption = test.options.find(option => 
+          option._id.toString() === vote.selectedOption.toString()
+        );
+
+        return {
+          _id: vote._id,
+          test: {
+            _id: test._id,
+            title: test.title,
+            description: test.description,
+            category: test.category,
+            coverImage: test.coverImage,
+            totalVotes: test.totalVotes,
+            createdBy: test.createdBy,
+            createdAt: test.createdAt
+          },
+          selectedOption: selectedOption ? {
+            _id: selectedOption._id,
+            title: selectedOption.title,
+            image: selectedOption.image,
+            customFields: selectedOption.customFields
+          } : null,
+          votedAt: vote.votedAt
+        };
+      })
+    );
+
+    // Filter out null results (deleted tests)
+    const validVotedTests = votedTestsWithDetails.filter(test => test !== null);
+
     res.status(StatusCodes.OK).json({
       success: true,
-      votedTests: user.votedTests
+      votedTests: validVotedTests,
+      totalVotes: user.testStats.totalVotes,
+      userStats: user.testStats
     });
   } catch (error) {
     next(error);
