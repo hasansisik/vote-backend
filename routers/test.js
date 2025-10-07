@@ -7,6 +7,7 @@ const {
   getTestResults,
   getPopularTests,
   getTestsByCategory,
+  getTestsByCategorySlug,
   updateTest,
   deleteTest,
   resetTestVotes,
@@ -24,6 +25,7 @@ router.get('/popular', getPopularTests);
 router.get('/trend', getTrendTests);
 router.get('/rankings', getGlobalRankings);
 router.get('/category/:category', getTestsByCategory);
+router.get('/category-slug/:slug', getTestsByCategorySlug);
 router.get('/:id', getSingleTest);
 router.get('/:id/results', getTestResults);
 router.post('/:id/vote', voteOnTest);

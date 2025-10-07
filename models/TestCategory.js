@@ -61,4 +61,6 @@ TestCategorySchema.statics.getBySlug = function(slug) {
   return this.findOne({ slug });
 };
 
-module.exports = mongoose.model('TestCategory', TestCategorySchema);
+const TestCategory = mongoose.model('TestCategory', TestCategorySchema);
+
+module.exports = { TestCategory };

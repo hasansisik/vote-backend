@@ -1,5 +1,6 @@
 const { Test } = require("../models/Test");
 const { User } = require("../models/User");
+const { TestCategory } = require("../models/TestCategory");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 
@@ -320,6 +321,67 @@ const getTestsByCategory = async (req, res, next) => {
   }
 };
 
+// Get Tests by Category Slug
+const getTestsByCategorySlug = async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+    const { limit = 20, page = 1 } = req.query;
+
+    // Önce TestCategory'den slug'a göre kategori bul
+    const category = await TestCategory.findOne({ slug });
+    
+    if (!category) {
+      throw new CustomError.NotFoundError("Kategori bulunamadı");
+    }
+
+    const skip = (page - 1) * limit;
+
+    // Bu kategoriye ait testleri getir (ObjectId ile)
+    const tests = await Test.find({ 
+      category: category._id, 
+      isActive: true 
+    })
+      .populate('createdBy', 'name surname')
+      .populate('category', 'name slug')
+      .sort({ totalVotes: -1, createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const total = await Test.countDocuments({ 
+      category: category._id, 
+      isActive: true 
+    });
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      category: {
+        _id: category._id,
+        name: category.name,
+        slug: category.slug
+      },
+      tests: tests.map(test => ({
+        _id: test._id,
+        title: test.title,
+        description: test.description,
+        coverImage: test.coverImage,
+        category: test.category?.name || category.name,
+        totalVotes: test.totalVotes,
+        options: test.options,
+        createdBy: test.createdBy,
+        createdAt: test.createdAt
+      })),
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(total / limit),
+        totalItems: total,
+        itemsPerPage: parseInt(limit)
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Update Test (Admin only)
 const updateTest = async (req, res, next) => {
   try {
@@ -564,6 +626,7 @@ module.exports = {
   getTestResults,
   getPopularTests,
   getTestsByCategory,
+  getTestsByCategorySlug,
   updateTest,
   deleteTest,
   resetTestVotes,
