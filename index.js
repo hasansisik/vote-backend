@@ -17,6 +17,7 @@ const authRouter = require('./routers/auth');
 const testRouter = require('./routers/test');
 const menuRouter = require('./routers/menu');
 const testCategoryRouter = require('./routers/testCategory');
+const notificationRouter = require('./routers/notification');
 
 //midlleware
 const notFoundMiddleware = require('./middleware/not-found')
@@ -73,6 +74,7 @@ app.use('/v1/auth', authRouter);
 app.use('/v1/tests', testRouter);
 app.use('/v1/menus', menuRouter);
 app.use('/v1/test-categories', testCategoryRouter);
+app.use('/v1/notifications', notificationRouter);
 
 app.use(notFoundMiddleware);
 app.use(erorHandlerMiddleware);

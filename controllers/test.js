@@ -3,6 +3,7 @@ const { User } = require("../models/User");
 const { TestCategory } = require("../models/TestCategory");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
+const { sendNewVoteNotification, sendTestVotedNotification } = require("./notification");
 
 // Create Test (Admin only)
 const createTest = async (req, res, next) => {
@@ -61,6 +62,29 @@ const createTest = async (req, res, next) => {
     // Kullanıcının oluşturduğu testleri güncelle
     const user = await User.findById(req.user.userId);
     await user.createTest(test._id);
+
+    // Send new vote notification to all users (async, don't wait)
+    // Get category info for notification
+    const categoryInfo = await TestCategory.findById(category);
+    if (categoryInfo) {
+      // Get all active users to send notification
+      const users = await User.find({ status: 'active', isVerified: true }).select('_id');
+      
+      // Send notification to each user (in batches to avoid overwhelming)
+      const batchSize = 100;
+      for (let i = 0; i < users.length; i += batchSize) {
+        const batch = users.slice(i, i + batchSize);
+        const notificationPromises = batch.map(user => 
+          sendNewVoteNotification(user._id, {
+            testId: test._id,
+            categoryId: categoryInfo._id,
+            categoryName: categoryInfo.name,
+            categorySlug: categoryInfo.slug
+          }).catch(console.error)
+        );
+        await Promise.all(notificationPromises);
+      }
+    }
 
     res.status(StatusCodes.CREATED).json({
       success: true,
@@ -193,6 +217,12 @@ const voteOnTest = async (req, res, next) => {
       const user = await User.findById(userId);
       if (user) {
         await user.voteOnTest(test._id, optionId);
+        
+        // Send test voted notification (async, don't wait)
+        sendTestVotedNotification(userId, {
+          testId: test._id,
+          testTitle: test.title
+        }).catch(console.error);
       }
     }
 

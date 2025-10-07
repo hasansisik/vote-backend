@@ -4,6 +4,7 @@ const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const { sendResetPasswordEmail, sendVerificationEmail } = require("../helpers");
 const { generateToken } = require("../services/token.service");
+const { sendWelcomeNotification, sendProfileUpdateNotification } = require("./notification");
 const bcrypt = require("bcrypt");
 
 //Register
@@ -87,6 +88,9 @@ const register = async (req, res, next) => {
       email: user.email,
       verificationCode,
     });
+
+    // Send welcome notification (async, don't wait)
+    sendWelcomeNotification(user._id).catch(console.error);
 
     res.json({
       message:
@@ -619,6 +623,9 @@ const editProfile = async (req, res) => {
       .populate("profile")
       .populate("address");
 
+    // Send profile update notification (async, don't wait)
+    sendProfileUpdateNotification(user._id).catch(console.error);
+
     res.json({
       message: "Profil başarıyla güncellendi.",
       user: updatedUser
@@ -804,6 +811,11 @@ const googleAuth = async (req, res, next) => {
     });
 
     await token.save();
+
+    // Send welcome notification for new users (async, don't wait)
+    if (isNewUser) {
+      sendWelcomeNotification(user._id).catch(console.error);
+    }
 
     res.json({
       message: isNewUser ? "Google ile kayıt başarılı." : "Google ile giriş başarılı.",

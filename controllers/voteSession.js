@@ -1,7 +1,9 @@
 const { Test } = require("../models/Test");
+const { User } = require("../models/User");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const { v4: uuidv4 } = require('uuid');
+const { sendTestVotedNotification } = require("./notification");
 
 // Start Vote Session
 const startVoteSession = async (req, res, next) => {
@@ -132,6 +134,22 @@ const voteOnOption = async (req, res, next) => {
       .populate('voteSessions.finalWinner');
     
     const updatedSession = updatedTest.getVoteSession(sessionId);
+
+    // Send notification if user is authenticated and session is complete
+    if (userId && updatedSession.isComplete) {
+      try {
+        const user = await User.findById(userId);
+        if (user) {
+          sendTestVotedNotification(userId, {
+            testId: test._id,
+            testTitle: test.title
+          }).catch(console.error);
+        }
+      } catch (error) {
+        console.error('Error sending vote notification:', error);
+        // Don't fail the request if notification fails
+      }
+    }
 
     res.status(StatusCodes.OK).json({
       success: true,
