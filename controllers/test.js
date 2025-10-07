@@ -22,8 +22,8 @@ const createTest = async (req, res, next) => {
     } = req.body;
 
     // Validation
-    if (!title || !category) {
-      throw new CustomError.BadRequestError("Başlık ve kategori gereklidir");
+    if (!title || !title.tr || !category) {
+      throw new CustomError.BadRequestError("Türkçe başlık ve kategori gereklidir");
     }
 
     if (!options || options.length < 2) {
@@ -32,15 +32,15 @@ const createTest = async (req, res, next) => {
 
     // Her seçenek için validation
     for (let option of options) {
-      if (!option.title || !option.image) {
-        throw new CustomError.BadRequestError("Her seçenek için başlık ve görsel gereklidir");
+      if (!option.title || !option.title.tr || !option.image) {
+        throw new CustomError.BadRequestError("Her seçenek için Türkçe başlık ve görsel gereklidir");
       }
       
       // Custom fields validation - sadece dolu olanları kontrol et
       if (option.customFields && Array.isArray(option.customFields)) {
         option.customFields = option.customFields.filter(field => 
-          field.fieldName && field.fieldValue && 
-          field.fieldName.trim() !== '' && field.fieldValue.trim() !== ''
+          field.fieldName && field.fieldName.tr && field.fieldValue && field.fieldValue.tr && 
+          field.fieldName.tr.trim() !== '' && field.fieldValue.tr.trim() !== ''
         );
       }
     }
@@ -484,8 +484,8 @@ const updateTest = async (req, res, next) => {
         // Custom fields validation - sadece dolu olanları al
         const cleanedCustomFields = newOption.customFields && Array.isArray(newOption.customFields) 
           ? newOption.customFields.filter(field => 
-              field.fieldName && field.fieldValue && 
-              field.fieldName.trim() !== '' && field.fieldValue.trim() !== ''
+              field.fieldName && field.fieldName.tr && field.fieldValue && field.fieldValue.tr && 
+              field.fieldName.tr.trim() !== '' && field.fieldValue.tr.trim() !== ''
             )
           : [];
         

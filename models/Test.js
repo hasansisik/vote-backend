@@ -2,10 +2,11 @@ const mongoose = require("mongoose");
 
 // Option Schema - Test seçenekleri için
 const OptionSchema = new mongoose.Schema({
-  title: { 
-    type: String, 
-    required: [true, "Seçenek başlığı gereklidir"],
-    trim: true 
+  title: {
+    tr: { type: String, required: [true, "Türkçe seçenek başlığı gereklidir"], trim: true },
+    en: { type: String, trim: true },
+    de: { type: String, trim: true },
+    fr: { type: String, trim: true },
   },
   image: { 
     type: String, 
@@ -13,15 +14,17 @@ const OptionSchema = new mongoose.Schema({
     trim: true 
   },
   customFields: [{
-    fieldName: { 
-      type: String, 
-      required: true,
-      trim: true 
+    fieldName: {
+      tr: { type: String, required: true, trim: true },
+      en: { type: String, trim: true },
+      de: { type: String, trim: true },
+      fr: { type: String, trim: true },
     },
-    fieldValue: { 
-      type: String, 
-      required: true,
-      trim: true 
+    fieldValue: {
+      tr: { type: String, required: true, trim: true },
+      en: { type: String, trim: true },
+      de: { type: String, trim: true },
+      fr: { type: String, trim: true },
     }
   }],
   votes: { 
@@ -36,26 +39,33 @@ const OptionSchema = new mongoose.Schema({
 
 // Test Schema
 const TestSchema = new mongoose.Schema({
-  title: { 
-    type: String, 
-    required: [true, "Test başlığı gereklidir"],
-    trim: true 
+  title: {
+    tr: { type: String, required: [true, "Türkçe test başlığı gereklidir"], trim: true },
+    en: { type: String, trim: true },
+    de: { type: String, trim: true },
+    fr: { type: String, trim: true },
   },
-  description: { 
-    type: String, 
-    trim: true 
+  description: {
+    tr: { type: String, default: '', trim: true },
+    en: { type: String, default: '', trim: true },
+    de: { type: String, default: '', trim: true },
+    fr: { type: String, default: '', trim: true },
   },
   coverImage: {
     type: String,
     trim: true
   },
-  headerText: { 
-    type: String, 
-    trim: true 
+  headerText: {
+    tr: { type: String, default: '', trim: true },
+    en: { type: String, default: '', trim: true },
+    de: { type: String, default: '', trim: true },
+    fr: { type: String, default: '', trim: true },
   },
-  footerText: { 
-    type: String, 
-    trim: true 
+  footerText: {
+    tr: { type: String, default: '', trim: true },
+    en: { type: String, default: '', trim: true },
+    de: { type: String, default: '', trim: true },
+    fr: { type: String, default: '', trim: true },
   },
   category: { 
     type: String, 
