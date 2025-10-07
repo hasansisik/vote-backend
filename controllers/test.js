@@ -17,6 +17,7 @@ const createTest = async (req, res, next) => {
       category,
       trend,
       popular,
+      endDate,
       options
     } = req.body;
 
@@ -53,6 +54,7 @@ const createTest = async (req, res, next) => {
       category,
       trend: trend || false,
       popular: popular || false,
+      endDate: endDate ? new Date(endDate) : null,
       options,
       createdBy: req.user.userId
     });
@@ -99,6 +101,9 @@ const createTest = async (req, res, next) => {
 // Get All Tests
 const getAllTests = async (req, res, next) => {
   try {
+    // Önce süresi dolmuş testleri güncelle
+    await Test.updateExpiredTests();
+    
     const {
       category,
       page = 1,
@@ -305,6 +310,9 @@ const getTestResults = async (req, res, next) => {
 // Get Popular Tests
 const getPopularTests = async (req, res, next) => {
   try {
+    // Önce süresi dolmuş testleri güncelle
+    await Test.updateExpiredTests();
+    
     const { limit = 10, category } = req.query;
 
     const filter = { isActive: true, popular: true };
@@ -374,6 +382,9 @@ const getTestsByCategory = async (req, res, next) => {
 // Get Tests by Category Slug
 const getTestsByCategorySlug = async (req, res, next) => {
   try {
+    // Önce süresi dolmuş testleri güncelle
+    await Test.updateExpiredTests();
+    
     const { slug } = req.params;
     const { limit = 20, page = 1 } = req.query;
 
@@ -450,12 +461,16 @@ const updateTest = async (req, res, next) => {
 
     // Güncellenebilir alanlar
     const allowedUpdates = [
-      'title', 'description', 'coverImage', 'headerText', 'footerText', 'category', 'isActive', 'trend', 'popular'
+      'title', 'description', 'coverImage', 'headerText', 'footerText', 'category', 'isActive', 'trend', 'popular', 'endDate'
     ];
     
     allowedUpdates.forEach(field => {
       if (updates[field] !== undefined) {
-        test[field] = updates[field];
+        if (field === 'endDate') {
+          test[field] = updates[field] ? new Date(updates[field]) : null;
+        } else {
+          test[field] = updates[field];
+        }
       }
     });
 
@@ -641,6 +656,9 @@ const getUserVotedTests = async (req, res, next) => {
 // Get Trend Tests
 const getTrendTests = async (req, res, next) => {
   try {
+    // Önce süresi dolmuş testleri güncelle
+    await Test.updateExpiredTests();
+    
     const { limit = 5 } = req.query;
 
     // Trend olan aktif testleri getir

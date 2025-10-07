@@ -71,6 +71,10 @@ const TestSchema = new mongoose.Schema({
     type: Boolean, 
     default: true 
   },
+  endDate: {
+    type: Date,
+    default: null
+  },
   trend: { 
     type: Boolean, 
     default: false 
@@ -115,7 +119,7 @@ TestSchema.virtual('topOption').get(function() {
   );
 });
 
-// Pre-save middleware - İstatistikleri güncelle
+// Pre-save middleware - İstatistikleri güncelle ve endDate kontrolü
 TestSchema.pre('save', function(next) {
   if (this.options && this.options.length > 0) {
     // Toplam oy sayısını hesapla
@@ -137,6 +141,12 @@ TestSchema.pre('save', function(next) {
     // Ortalama oy sayısını hesapla
     this.stats.averageVotesPerOption = this.totalVotes / this.options.length;
   }
+  
+  // EndDate kontrolü - eğer endDate geçmişse isActive'i false yap
+  if (this.endDate && new Date() > this.endDate) {
+    this.isActive = false;
+  }
+  
   next();
 });
 
@@ -197,6 +207,20 @@ TestSchema.statics.getPopular = function(limit = 10) {
     .populate('createdBy', 'name surname')
     .sort({ totalVotes: -1 })
     .limit(limit);
+};
+
+// Static method - Süresi dolmuş testleri otomatik olarak pasif yap
+TestSchema.statics.updateExpiredTests = async function() {
+  const now = new Date();
+  return this.updateMany(
+    { 
+      endDate: { $lte: now },
+      isActive: true 
+    },
+    { 
+      isActive: false 
+    }
+  );
 };
 
 const Test = mongoose.model("Test", TestSchema);
