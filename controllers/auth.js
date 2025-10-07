@@ -97,6 +97,7 @@ const register = async (req, res, next) => {
         surname: user.surname,
         email: user.email,
         picture: profile.picture,
+        profile: profile, // Add full profile object
         courseTrial: user.courseTrial,
         theme: user.theme,
         token: accessToken,
@@ -198,6 +199,7 @@ const login = async (req, res, next) => {
         picture:
           user.profile?.picture ||
           "https://res.cloudinary.com/da2qwsrbv/image/upload/v1757687384/sj3lcvvd7mjuuwpzann8.png",
+        profile: user.profile, // Add full profile object
         status: user.status,
         courseTrial: user.courseTrial,
         theme: user.theme,
@@ -788,6 +790,7 @@ const googleAuth = async (req, res, next) => {
         surname: user.surname,
         email: user.email,
         picture: user.profile?.picture || picture || "https://res.cloudinary.com/da2qwsrbv/image/upload/v1757687384/sj3lcvvd7mjuuwpzann8.png",
+        profile: user.profile, // Add full profile object
         status: user.status,
         courseTrial: user.courseTrial,
         theme: user.theme,
@@ -865,6 +868,7 @@ const googleLogin = async (req, res, next) => {
         surname: user.surname,
         email: user.email,
         picture: user.profile?.picture || picture || "https://res.cloudinary.com/da2qwsrbv/image/upload/v1757687384/sj3lcvvd7mjuuwpzann8.png",
+        profile: user.profile, // Add full profile object
         status: user.status,
         courseTrial: user.courseTrial,
         theme: user.theme,
@@ -952,6 +956,7 @@ const googleRegister = async (req, res, next) => {
         surname: user.surname,
         email: user.email,
         picture: profile.picture,
+        profile: profile, // Add full profile object
         courseTrial: user.courseTrial,
         theme: user.theme,
         token: accessToken,
