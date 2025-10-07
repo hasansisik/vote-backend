@@ -13,7 +13,8 @@ const {
   resetTestVotes,
   getUserVotedTests,
   getTrendTests,
-  getGlobalRankings
+  getGlobalRankings,
+  getGlobalStats
 } = require('../controllers/test');
 const { isAuthenticated, isAdmin, isOptionalAuthenticated } = require('../middleware/authMiddleware');
 
@@ -24,6 +25,7 @@ router.get('/', getAllTests);
 router.get('/popular', getPopularTests);
 router.get('/trend', getTrendTests);
 router.get('/rankings', getGlobalRankings);
+router.get('/stats', getGlobalStats);
 router.get('/category/:category', getTestsByCategory);
 router.get('/category-slug/:slug', getTestsByCategorySlug);
 router.get('/:id', getSingleTest);

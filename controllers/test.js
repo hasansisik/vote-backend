@@ -685,5 +685,34 @@ module.exports = {
   getGlobalRankings
 };
 
+// Get Global Statistics
+const getGlobalStats = async (req, res, next) => {
+  try {
+    // Toplam test sayısı
+    const totalTests = await Test.countDocuments({ isActive: true });
+    
+    // Toplam oy sayısı (tüm testlerdeki toplam oy)
+    const tests = await Test.find({ isActive: true });
+    const totalVotes = tests.reduce((sum, test) => sum + (test.totalVotes || 0), 0);
+    
+    // Toplam kullanıcı sayısı (tüm kullanıcılar)
+    const totalUsers = await User.countDocuments();
+    
+    res.status(StatusCodes.OK).json({
+      success: true,
+      stats: {
+        totalTests,
+        totalVotes,
+        totalUsers
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Export getGlobalStats
+module.exports.getGlobalStats = getGlobalStats;
+
 
 
