@@ -257,7 +257,7 @@ const getPopularTests = async (req, res, next) => {
   try {
     const { limit = 10, category } = req.query;
 
-    const filter = { isActive: true };
+    const filter = { isActive: true, popular: true };
     if (category) filter.category = category;
 
     const tests = await Test.find(filter)
