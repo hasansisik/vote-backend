@@ -426,7 +426,10 @@ const getTestsByCategorySlug = async (req, res, next) => {
         title: test.title,
         description: test.description,
         coverImage: test.coverImage,
-        category: test.category?.name || category.name,
+        category: {
+          _id: category._id,
+          name: category.name
+        },
         totalVotes: test.totalVotes,
         options: test.options,
         createdBy: test.createdBy,
