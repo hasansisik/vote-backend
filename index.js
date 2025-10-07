@@ -32,7 +32,8 @@ const corsOptions = {
       'http://localhost:3000',
       'http://localhost:3001',
       'https://football-nextjs.vercel.app',
-      'https://football-nextjs-git-main.vercel.app'
+      'https://football-nextjs-git-main.vercel.app',
+      'https://vote-nextjs-one.vercel.app'
     ];
     
     if (allowedOrigins.includes(origin)) {
