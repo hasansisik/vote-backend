@@ -159,20 +159,24 @@ UserSchema.pre('deleteOne', async function(next) {
 // Method - Test oylama
 UserSchema.methods.voteOnTest = function(testId, optionId) {
   // Kullanıcının bu teste daha önce oy verip vermediğini kontrol et
-  const existingVote = this.votedTests.find(vote => 
+  const existingVoteIndex = this.votedTests.findIndex(vote => 
     vote.test.toString() === testId.toString()
   );
   
-  if (existingVote) {
-    throw new Error('Bu teste zaten oy verdiniz');
+  if (existingVoteIndex !== -1) {
+    // Eğer daha önce oy vermişse, tercihini güncelle
+    this.votedTests[existingVoteIndex].selectedOption = optionId;
+    this.votedTests[existingVoteIndex].votedAt = new Date();
+  } else {
+    // İlk kez oy veriyorsa, yeni oy ekle
+    this.votedTests.push({
+      test: testId,
+      selectedOption: optionId,
+      votedAt: new Date()
+    });
+    this.testStats.totalVotes += 1;
   }
   
-  this.votedTests.push({
-    test: testId,
-    selectedOption: optionId
-  });
-  
-  this.testStats.totalVotes += 1;
   return this.save();
 };
 
