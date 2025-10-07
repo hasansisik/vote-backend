@@ -14,6 +14,8 @@ const createTest = async (req, res, next) => {
       headerText,
       footerText,
       category,
+      trend,
+      popular,
       options
     } = req.body;
 
@@ -40,6 +42,8 @@ const createTest = async (req, res, next) => {
       headerText,
       footerText,
       category,
+      trend: trend || false,
+      popular: popular || false,
       options,
       createdBy: req.user.userId
     });
