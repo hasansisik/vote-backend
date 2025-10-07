@@ -11,6 +11,7 @@ const {
   deleteTest,
   resetTestVotes,
   getUserVotedTests,
+  getTrendTests,
   getGlobalRankings
 } = require('../controllers/test');
 const { isAuthenticated, isAdmin } = require('../middleware/authMiddleware');
@@ -20,6 +21,7 @@ const router = express.Router();
 // Public routes
 router.get('/', getAllTests);
 router.get('/popular', getPopularTests);
+router.get('/trend', getTrendTests);
 router.get('/rankings', getGlobalRankings);
 router.get('/category/:category', getTestsByCategory);
 router.get('/:id', getSingleTest);

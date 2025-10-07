@@ -71,6 +71,14 @@ const TestSchema = new mongoose.Schema({
     type: Boolean, 
     default: true 
   },
+  trend: { 
+    type: Boolean, 
+    default: false 
+  },
+  popular: { 
+    type: Boolean, 
+    default: false 
+  },
   createdBy: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User',

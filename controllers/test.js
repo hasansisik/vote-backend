@@ -338,7 +338,7 @@ const updateTest = async (req, res, next) => {
 
     // Güncellenebilir alanlar
     const allowedUpdates = [
-      'title', 'description', 'coverImage', 'headerText', 'footerText', 'category', 'isActive'
+      'title', 'description', 'coverImage', 'headerText', 'footerText', 'category', 'isActive', 'trend', 'popular'
     ];
     
     allowedUpdates.forEach(field => {
@@ -476,6 +476,40 @@ const getUserVotedTests = async (req, res, next) => {
 };
 
 
+// Get Trend Tests
+const getTrendTests = async (req, res, next) => {
+  try {
+    const { limit = 5 } = req.query;
+
+    // Trend olan aktif testleri getir
+    const trendTests = await Test.find({ 
+      isActive: true, 
+      trend: true 
+    })
+      .populate('createdBy', 'name surname')
+      .sort({ totalVotes: -1, createdAt: -1 })
+      .limit(parseInt(limit));
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      tests: trendTests.map(test => ({
+        _id: test._id,
+        title: test.title,
+        description: test.description,
+        coverImage: test.coverImage,
+        category: test.category,
+        totalVotes: test.totalVotes,
+        trend: test.trend,
+        popular: test.popular,
+        createdBy: test.createdBy,
+        createdAt: test.createdAt
+      }))
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Get Global Rankings
 const getGlobalRankings = async (req, res, next) => {
   try {
@@ -534,6 +568,7 @@ module.exports = {
   deleteTest,
   resetTestVotes,
   getUserVotedTests,
+  getTrendTests,
   getGlobalRankings
 };
 
