@@ -272,6 +272,7 @@ const getPopularTests = async (req, res, next) => {
         _id: test._id,
         title: test.title,
         description: test.description,
+        coverImage: test.coverImage,
         category: test.category,
         totalVotes: test.totalVotes,
         createdBy: test.createdBy,

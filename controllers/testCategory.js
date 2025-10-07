@@ -1,4 +1,4 @@
-const TestCategory = require('../models/TestCategory');
+const { TestCategory } = require('../models/TestCategory');
 const { BadRequestError, NotFoundError } = require('../errors');
 
 // Helper function to generate slug from Turkish text
