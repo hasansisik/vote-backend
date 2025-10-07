@@ -430,6 +430,7 @@ const editProfile = async (req, res) => {
       "surname",
       "email",
       "password",
+      "currentPassword",
       "address",
       "phoneNumber",
       "courseTrial",
@@ -454,7 +455,10 @@ const editProfile = async (req, res) => {
     }
 
     const user = await User.findById(req.user.userId)
-      .populate("auth")
+      .populate({
+        path: "auth",
+        select: "+password"
+      })
       .populate("profile")
       .populate("address");
 
