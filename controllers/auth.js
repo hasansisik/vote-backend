@@ -606,48 +606,6 @@ const editProfile = async (req, res) => {
   }
 };
 
-//Verify Password
-const verifyPassword = async (req, res, next) => {
-  try {
-    const { password } = req.body;
-
-    if (!password) {
-      return res.status(400).json({
-        message: "Şifre gereklidir.",
-      });
-    }
-
-    const user = await User.findById(req.user.userId).populate({
-      path: "auth",
-      select: "+password",
-    });
-
-    if (!user) {
-      return res.status(404).json({
-        message: "Kullanıcı bulunamadı.",
-      });
-    }
-
-    const isPasswordCorrect = await bcrypt.compare(
-      password,
-      user.auth.password
-    );
-
-    if (!isPasswordCorrect) {
-      return res.status(400).json({
-        message: "Yanlış şifre.",
-        isValid: false,
-      });
-    }
-
-    res.json({
-      message: "Şifre doğrulandı.",
-      isValid: true,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
 
 //Email
 const verifyEmail = async (req, res) => {
@@ -1150,7 +1108,6 @@ module.exports = {
   getAllUsers,
   againEmail,
   editProfile,
-  verifyPassword,
   deleteAccount,
   deleteUser,
   updateUserRole,
