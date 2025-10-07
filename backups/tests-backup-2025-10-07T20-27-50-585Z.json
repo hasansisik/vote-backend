@@ -1,0 +1,1387 @@
+[
+  {
+    "title": "EN İYİ ORDU",
+    "description": "Hangi Ülkenin Ordusu Sizin İçin Daha İyi? Size göre hangi ülke kurduğu ordu ile dünyanın en güçlüsü? Bu tercihler bakalım sizin için nasıl olacak...",
+    "headerText": "Sizin için en güçlü orduyu seçin",
+    "footerText": "",
+    "stats": {
+      "totalComparisons": 0,
+      "averageVotesPerOption": 0.4666666666666667,
+      "mostPopularOption": "68e41906dc5d1274a1f09834"
+    },
+    "endDate": null,
+    "_id": "68e41906dc5d1274a1f0981b",
+    "coverImage": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759778540/mrqxxaoyuup1z8s7zcqh.jpg",
+    "category": "68e442cdf581f9d223c8c68c",
+    "options": [
+      {
+        "title": "ABD",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759778689/fwcoazc6vdaitaerbqow.jpg",
+        "customFields": [
+          {
+            "fieldName": "Potansiyel Asker Sayısı",
+            "fieldValue": "60 milyon",
+            "_id": "68e41906dc5d1274a1f0981d"
+          }
+        ],
+        "votes": 1,
+        "winRate": 14.285714285714285,
+        "_id": "68e41906dc5d1274a1f0981c",
+        "createdAt": "2025-10-06T19:31:18.869Z",
+        "updatedAt": "2025-10-07T02:16:43.905Z"
+      },
+      {
+        "title": "ALMANYA",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759778699/kpqeknfotfoe6mfkfhja.jpg",
+        "customFields": [
+          {
+            "fieldName": "Potansiyel Asker Sayısı",
+            "fieldValue": "20 milyon",
+            "_id": "68e41906dc5d1274a1f0981f"
+          }
+        ],
+        "votes": 2,
+        "winRate": 28.57142857142857,
+        "_id": "68e41906dc5d1274a1f0981e",
+        "createdAt": "2025-10-06T19:31:18.870Z",
+        "updatedAt": "2025-10-07T15:50:48.197Z"
+      },
+      {
+        "title": "BİRLEŞİK KRALLIK",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759778713/sbcqyorfuzguunm5zbhz.jpg",
+        "customFields": [
+          {
+            "fieldName": "Potansiyel Asker Sayısı",
+            "fieldValue": "20 milyon",
+            "_id": "68e41906dc5d1274a1f09821"
+          }
+        ],
+        "votes": 1,
+        "winRate": 14.285714285714285,
+        "_id": "68e41906dc5d1274a1f09820",
+        "createdAt": "2025-10-06T19:31:18.870Z",
+        "updatedAt": "2025-10-07T02:09:15.740Z"
+      },
+      {
+        "title": "BREZİLYA",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759778723/v0aujby4ueendbuilnyz.jpg",
+        "customFields": [
+          {
+            "fieldName": "Potansiyel Asker Sayısı",
+            "fieldValue": "50 milyon",
+            "_id": "68e41906dc5d1274a1f09823"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e41906dc5d1274a1f09822",
+        "createdAt": "2025-10-06T19:31:18.870Z",
+        "updatedAt": "2025-10-06T19:31:18.870Z"
+      },
+      {
+        "title": "ÇİN",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759778733/ic4erbfdwmsykpdobopg.jpg",
+        "customFields": [
+          {
+            "fieldName": "Potansiyel Asker Sayısı",
+            "fieldValue": "200 milyon",
+            "_id": "68e41906dc5d1274a1f09825"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e41906dc5d1274a1f09824",
+        "createdAt": "2025-10-06T19:31:18.870Z",
+        "updatedAt": "2025-10-06T19:31:18.870Z"
+      },
+      {
+        "title": "FRANSA",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759778741/z4fkfvnwwmeijozjgk6w.jpg",
+        "customFields": [
+          {
+            "fieldName": "Potansiyel Asker Sayısı",
+            "fieldValue": "15 milyon",
+            "_id": "68e41906dc5d1274a1f09827"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e41906dc5d1274a1f09826",
+        "createdAt": "2025-10-06T19:31:18.871Z",
+        "updatedAt": "2025-10-06T19:31:18.871Z"
+      },
+      {
+        "title": "GÜNEY KORE",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759778750/iw8vlpyqabgsl3pkhvnm.jpg",
+        "customFields": [
+          {
+            "fieldName": "Potansiyel Asker Sayısı",
+            "fieldValue": "50 milyon",
+            "_id": "68e41906dc5d1274a1f09829"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e41906dc5d1274a1f09828",
+        "createdAt": "2025-10-06T19:31:18.871Z",
+        "updatedAt": "2025-10-06T19:31:18.871Z"
+      },
+      {
+        "title": "HİNDİSTAN",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759778760/rgoz2ftkeqyxedbq6dof.jpg",
+        "customFields": [
+          {
+            "fieldName": "Potansiyel Asker Sayısı",
+            "fieldValue": "100 milyon",
+            "_id": "68e41906dc5d1274a1f0982b"
+          }
+        ],
+        "votes": 1,
+        "winRate": 14.285714285714285,
+        "_id": "68e41906dc5d1274a1f0982a",
+        "createdAt": "2025-10-06T19:31:18.871Z",
+        "updatedAt": "2025-10-07T02:13:45.443Z"
+      },
+      {
+        "title": "IRAK",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759778770/fxavavwzgk7nb3urkmyd.jpg",
+        "customFields": [
+          {
+            "fieldName": "Potansiyel Asker Sayısı",
+            "fieldValue": "25 milyon",
+            "_id": "68e41906dc5d1274a1f0982d"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e41906dc5d1274a1f0982c",
+        "createdAt": "2025-10-06T19:31:18.871Z",
+        "updatedAt": "2025-10-06T19:31:18.871Z"
+      },
+      {
+        "title": "İTALYA",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759778784/qqk6iqbg04sewefaeiap.jpg",
+        "customFields": [
+          {
+            "fieldName": "Potansiyel Asker Sayısı",
+            "fieldValue": "10 milyon",
+            "_id": "68e41906dc5d1274a1f0982f"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e41906dc5d1274a1f0982e",
+        "createdAt": "2025-10-06T19:31:18.871Z",
+        "updatedAt": "2025-10-06T19:31:18.871Z"
+      },
+      {
+        "title": "JAPONYA",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759778806/heipfaiqst9mz4jghcne.jpg",
+        "customFields": [
+          {
+            "fieldName": "Potansiyel Asker Sayısı",
+            "fieldValue": "35 milyon",
+            "_id": "68e41906dc5d1274a1f09831"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e41906dc5d1274a1f09830",
+        "createdAt": "2025-10-06T19:31:18.871Z",
+        "updatedAt": "2025-10-06T19:31:18.871Z"
+      },
+      {
+        "title": "MISIR",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759778816/mbjcs8yamf3m8hl4k5gg.jpg",
+        "customFields": [
+          {
+            "fieldName": "Potansiyel Asker Sayısı",
+            "fieldValue": "25 miyon",
+            "_id": "68e41906dc5d1274a1f09833"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e41906dc5d1274a1f09832",
+        "createdAt": "2025-10-06T19:31:18.871Z",
+        "updatedAt": "2025-10-06T19:31:18.871Z"
+      },
+      {
+        "title": "PAKİSTAN",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759778830/uvjrlkfvjsfg2qco4aua.jpg",
+        "customFields": [
+          {
+            "fieldName": "Potansiyel Asker Sayısı",
+            "fieldValue": "50 milyon",
+            "_id": "68e41906dc5d1274a1f09835"
+          }
+        ],
+        "votes": 2,
+        "winRate": 28.57142857142857,
+        "_id": "68e41906dc5d1274a1f09834",
+        "createdAt": "2025-10-06T19:31:18.871Z",
+        "updatedAt": "2025-10-07T02:29:14.399Z"
+      },
+      {
+        "title": "RUSYA",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759778843/wxh2n2gmnccoulsxzi1c.jpg",
+        "customFields": [
+          {
+            "fieldName": "Potansiyel Asker Sayısı",
+            "fieldValue": "40 milyon",
+            "_id": "68e41906dc5d1274a1f09837"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e41906dc5d1274a1f09836",
+        "createdAt": "2025-10-06T19:31:18.871Z",
+        "updatedAt": "2025-10-06T19:31:18.871Z"
+      },
+      {
+        "title": "TÜRKİYE",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759778858/vfzcb0atpdimcjfer4qn.jpg",
+        "customFields": [
+          {
+            "fieldName": "Potansiyel Asker Sayısı",
+            "fieldValue": "30 milyon",
+            "_id": "68e41906dc5d1274a1f09839"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e41906dc5d1274a1f09838",
+        "createdAt": "2025-10-06T19:31:18.871Z",
+        "updatedAt": "2025-10-06T19:31:18.871Z"
+      }
+    ],
+    "totalVotes": 7,
+    "isActive": true,
+    "createdBy": "68e07863b612674e825b0ad5",
+    "voters": [
+      {
+        "user": "68e3e79b74063fcef06fbccf",
+        "_id": "68e47afa940ebc4efc4db071",
+        "votedAt": "2025-10-07T02:29:14.103Z"
+      }
+    ],
+    "createdAt": "2025-10-06T19:31:18.871Z",
+    "updatedAt": "2025-10-07T15:50:48.199Z",
+    "__v": 0,
+    "popular": true,
+    "trend": true
+  },
+  {
+    "title": "EN İYİ FUTBOLCU",
+    "description": "Gelmiş geçmiş en iyi futbolcu kimdir? Size göre en başaralı olan futbolcu kimdir? Tercihinizi yapın..",
+    "headerText": "Tarihin en iyi futbolcusu",
+    "footerText": "",
+    "stats": {
+      "totalComparisons": 0,
+      "averageVotesPerOption": 0.35714285714285715,
+      "mostPopularOption": "68e428317f2455b790df437e"
+    },
+    "endDate": null,
+    "_id": "68e428317f2455b790df437b",
+    "coverImage": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759806933/ucgz89l2i9s8trqborfg.jpg",
+    "category": "68e442cdf581f9d223c8c68c",
+    "options": [
+      {
+        "title": "BALE",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759782562/lears20nlnlbfhi6rahk.jpg",
+        "customFields": [
+          {
+            "fieldName": "Ülkesi",
+            "fieldValue": "GALLER",
+            "_id": "68e428317f2455b790df437d"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e428317f2455b790df437c",
+        "createdAt": "2025-10-06T20:36:01.788Z",
+        "updatedAt": "2025-10-06T20:36:01.788Z"
+      },
+      {
+        "title": "CRISTIANO RONALDO",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759782574/jvamxw4qeu2ffogegjcu.jpg",
+        "customFields": [
+          {
+            "fieldName": "Ülkesi",
+            "fieldValue": "PORTEKİZ",
+            "_id": "68e428317f2455b790df437f"
+          }
+        ],
+        "votes": 2,
+        "winRate": 40,
+        "_id": "68e428317f2455b790df437e",
+        "createdAt": "2025-10-06T20:36:01.788Z",
+        "updatedAt": "2025-10-07T04:23:51.815Z"
+      },
+      {
+        "title": "CRUYFF",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759782605/acw8mpv70sq1gfuvkfov.jpg",
+        "customFields": [
+          {
+            "fieldName": "Ülkesi",
+            "fieldValue": "HOLLANDA",
+            "_id": "68e428317f2455b790df4381"
+          }
+        ],
+        "votes": 1,
+        "winRate": 20,
+        "_id": "68e428317f2455b790df4380",
+        "createdAt": "2025-10-06T20:36:01.788Z",
+        "updatedAt": "2025-10-07T02:50:27.956Z"
+      },
+      {
+        "title": "GEORGE",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759782621/sksvpm1ovrhwgbxda7q2.jpg",
+        "customFields": [
+          {
+            "fieldName": "Ülkesi",
+            "fieldValue": "ALMANYA",
+            "_id": "68e428317f2455b790df4383"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e428317f2455b790df4382",
+        "createdAt": "2025-10-06T20:36:01.788Z",
+        "updatedAt": "2025-10-06T20:36:01.788Z"
+      },
+      {
+        "title": "HALAAND",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759782631/sp0unrpzqfyf9gjsegpu.jpg",
+        "customFields": [
+          {
+            "fieldName": "Ülkesi",
+            "fieldValue": "NORVEÇ",
+            "_id": "68e428317f2455b790df4385"
+          }
+        ],
+        "votes": 1,
+        "winRate": 20,
+        "_id": "68e428317f2455b790df4384",
+        "createdAt": "2025-10-06T20:36:01.788Z",
+        "updatedAt": "2025-10-07T02:23:47.846Z"
+      },
+      {
+        "title": "LEWANDOWSKİ",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759782642/xziydfaap4ry1dtom8rz.jpg",
+        "customFields": [
+          {
+            "fieldName": "Ülkesi",
+            "fieldValue": "POLONYA",
+            "_id": "68e428317f2455b790df4387"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e428317f2455b790df4386",
+        "createdAt": "2025-10-06T20:36:01.788Z",
+        "updatedAt": "2025-10-06T20:36:01.788Z"
+      },
+      {
+        "title": "MARADONA",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759782673/ejnspmilexvxm2dyxmjy.jpg",
+        "customFields": [
+          {
+            "fieldName": "Ülkesi",
+            "fieldValue": "ARJANTİN",
+            "_id": "68e428317f2455b790df4389"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e428317f2455b790df4388",
+        "createdAt": "2025-10-06T20:36:01.788Z",
+        "updatedAt": "2025-10-06T20:36:01.788Z"
+      },
+      {
+        "title": "MBAPPE",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759782687/jbhuyuowu4pbsx1igpt0.jpg",
+        "customFields": [
+          {
+            "fieldName": "Ülkesi",
+            "fieldValue": "FRANSA",
+            "_id": "68e428317f2455b790df438b"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e428317f2455b790df438a",
+        "createdAt": "2025-10-06T20:36:01.788Z",
+        "updatedAt": "2025-10-06T20:36:01.788Z"
+      },
+      {
+        "title": "MESSİ",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759782703/laskiczegaon33llqw02.jpg",
+        "customFields": [
+          {
+            "fieldName": "Ülkesi",
+            "fieldValue": "ARJANTİN",
+            "_id": "68e428317f2455b790df438d"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e428317f2455b790df438c",
+        "createdAt": "2025-10-06T20:36:01.788Z",
+        "updatedAt": "2025-10-06T20:36:01.788Z"
+      },
+      {
+        "title": "MODRİC",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759782716/gvae7ufffff3jcjuahxy.jpg",
+        "customFields": [
+          {
+            "fieldName": "Ülkesi",
+            "fieldValue": "HIRVATİSTAN",
+            "_id": "68e428317f2455b790df438f"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e428317f2455b790df438e",
+        "createdAt": "2025-10-06T20:36:01.788Z",
+        "updatedAt": "2025-10-06T20:36:01.788Z"
+      },
+      {
+        "title": "NEYMAR",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759782726/rp40pn6vrvfpdzkhznjh.jpg",
+        "customFields": [
+          {
+            "fieldName": "Ülkesi",
+            "fieldValue": "BRAZİLYA",
+            "_id": "68e428317f2455b790df4391"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e428317f2455b790df4390",
+        "createdAt": "2025-10-06T20:36:01.788Z",
+        "updatedAt": "2025-10-06T20:36:01.788Z"
+      },
+      {
+        "title": "PELE",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759782737/siiej8bpujjd8zwbhvhw.jpg",
+        "customFields": [
+          {
+            "fieldName": "Ülkesi",
+            "fieldValue": "BRAZİLYA",
+            "_id": "68e428317f2455b790df4393"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e428317f2455b790df4392",
+        "createdAt": "2025-10-06T20:36:01.788Z",
+        "updatedAt": "2025-10-06T20:36:01.788Z"
+      },
+      {
+        "title": "RONALDO",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759782746/buyjqxdcwc29ko9ntyzr.jpg",
+        "customFields": [
+          {
+            "fieldName": "Ülkesi",
+            "fieldValue": "BRAZİLYA",
+            "_id": "68e428317f2455b790df4395"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e428317f2455b790df4394",
+        "createdAt": "2025-10-06T20:36:01.788Z",
+        "updatedAt": "2025-10-06T20:36:01.788Z"
+      },
+      {
+        "title": "ZİDANE",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759782757/fb0qklodcjwikox8wvj7.jpg",
+        "customFields": [
+          {
+            "fieldName": "Ülkesi",
+            "fieldValue": "FRANSA",
+            "_id": "68e428317f2455b790df4397"
+          }
+        ],
+        "votes": 1,
+        "winRate": 20,
+        "_id": "68e428317f2455b790df4396",
+        "createdAt": "2025-10-06T20:36:01.788Z",
+        "updatedAt": "2025-10-07T02:51:28.804Z"
+      }
+    ],
+    "totalVotes": 5,
+    "isActive": true,
+    "createdBy": "68e07863b612674e825b0ad5",
+    "voters": [
+      {
+        "user": "68e3e79b74063fcef06fbccf",
+        "_id": "68e479b3bc474383f5a1d336",
+        "votedAt": "2025-10-07T02:23:47.541Z"
+      },
+      {
+        "user": "68e07863b612674e825b0ad5",
+        "_id": "68e47ff3468ab03eb8f3e5ca",
+        "votedAt": "2025-10-07T02:50:27.667Z"
+      }
+    ],
+    "createdAt": "2025-10-06T20:36:01.788Z",
+    "updatedAt": "2025-10-07T04:23:51.815Z",
+    "__v": 0,
+    "popular": true,
+    "trend": true
+  },
+  {
+    "title": "EN İYİ FORMALAR",
+    "description": "Efsane Futbol Takımı Formaları",
+    "headerText": "En beğendiğiniz formayı seçin",
+    "footerText": "Futbol tarihine damga vuran en efsane formalar, sadece sahadaki başarılarla değil, tasarımlarıyla da hafızalara kazınmıştır. Barcelona’nın ikonik kırmızı-lacivert çizgileri, Real Madrid’in klasik beyazı ve Juventus’un siyah-beyaz çubukları futbolun simgesi haline gelmiştir. Efsane futbol formaları, kulüplerin kimliğini ve tarihini yansıtan en güçlü sembollerden biridir.",
+    "stats": {
+      "totalComparisons": 0,
+      "averageVotesPerOption": 0.1,
+      "mostPopularOption": "68e47cf1468ab03eb8f3d5f6"
+    },
+    "endDate": null,
+    "_id": "68e47cf1468ab03eb8f3d5f3",
+    "coverImage": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759804614/pexswbwyne7wz0njyudu.jpg",
+    "category": "68e4448f5cac204ca5932fa7",
+    "options": [
+      {
+        "title": "Arjantin",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759804581/r3tmrkqyw5wta93zfijr.jpg",
+        "customFields": [
+          {
+            "fieldName": "YIL",
+            "fieldValue": "1986",
+            "_id": "68e47cf1468ab03eb8f3d5f5"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e47cf1468ab03eb8f3d5f4",
+        "createdAt": "2025-10-07T02:37:37.929Z",
+        "updatedAt": "2025-10-07T02:37:37.929Z"
+      },
+      {
+        "title": "Arsenal",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759804586/cyeectpnr1vfc8hhfgs0.jpg",
+        "customFields": [
+          {
+            "fieldName": "YIL",
+            "fieldValue": "2005-06",
+            "_id": "68e47cf1468ab03eb8f3d5f7"
+          }
+        ],
+        "votes": 1,
+        "winRate": 100,
+        "_id": "68e47cf1468ab03eb8f3d5f6",
+        "createdAt": "2025-10-07T02:37:37.930Z",
+        "updatedAt": "2025-10-07T03:01:48.159Z"
+      },
+      {
+        "title": "Almanya",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759804704/pfclhgw0dfnbzsrke4xz.jpg",
+        "customFields": [
+          {
+            "fieldName": "YIL",
+            "fieldValue": "1991",
+            "_id": "68e47dd9468ab03eb8f3d7c3"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e47dd9468ab03eb8f3d7c2",
+        "createdAt": "2025-10-07T02:41:29.185Z",
+        "updatedAt": "2025-10-07T02:41:29.185Z"
+      },
+      {
+        "title": "Barcelona",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759804730/wtl6jymdhjsidmvmwtxw.jpg",
+        "customFields": [
+          {
+            "fieldName": "YIL",
+            "fieldValue": "2010-11",
+            "_id": "68e47dd9468ab03eb8f3d7c5"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e47dd9468ab03eb8f3d7c4",
+        "createdAt": "2025-10-07T02:41:29.186Z",
+        "updatedAt": "2025-10-07T02:41:29.186Z"
+      },
+      {
+        "title": "Fransa",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759804755/etut3ks1xpw8vbd7kwlk.jpg",
+        "customFields": [
+          {
+            "fieldName": "YIL",
+            "fieldValue": "1998",
+            "_id": "68e47dd9468ab03eb8f3d7c7"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e47dd9468ab03eb8f3d7c6",
+        "createdAt": "2025-10-07T02:41:29.186Z",
+        "updatedAt": "2025-10-07T02:41:29.186Z"
+      },
+      {
+        "title": "Hollanda",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759804782/qtnxygv7sajarkjru4ni.jpg",
+        "customFields": [
+          {
+            "fieldName": "YIL",
+            "fieldValue": "1996",
+            "_id": "68e47dd9468ab03eb8f3d7c9"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e47dd9468ab03eb8f3d7c8",
+        "createdAt": "2025-10-07T02:41:29.186Z",
+        "updatedAt": "2025-10-07T02:41:29.186Z"
+      },
+      {
+        "title": "İnter",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759804798/q7omc3rqtfptv4zbunt8.jpg",
+        "customFields": [
+          {
+            "fieldName": "YIL",
+            "fieldValue": "2010-11",
+            "_id": "68e47dd9468ab03eb8f3d7cb"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e47dd9468ab03eb8f3d7ca",
+        "createdAt": "2025-10-07T02:41:29.186Z",
+        "updatedAt": "2025-10-07T02:41:29.186Z"
+      },
+      {
+        "title": "Juventus",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759804819/kzc3t9jslrzmyk7yvuch.jpg",
+        "customFields": [
+          {
+            "fieldName": "YIL",
+            "fieldValue": "1986",
+            "_id": "68e47dd9468ab03eb8f3d7cd"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e47dd9468ab03eb8f3d7cc",
+        "createdAt": "2025-10-07T02:41:29.186Z",
+        "updatedAt": "2025-10-07T02:41:29.186Z"
+      },
+      {
+        "title": "Manchester United",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759804840/gwqoklgu9xx2n7bm0mnu.jpg",
+        "customFields": [
+          {
+            "fieldName": "YIL",
+            "fieldValue": "1992-94",
+            "_id": "68e47dd9468ab03eb8f3d7cf"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e47dd9468ab03eb8f3d7ce",
+        "createdAt": "2025-10-07T02:41:29.186Z",
+        "updatedAt": "2025-10-07T02:41:29.186Z"
+      },
+      {
+        "title": "Türkiye",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759804872/ibqzade1bcjqvjbgpccn.jpg",
+        "customFields": [
+          {
+            "fieldName": "YIL",
+            "fieldValue": "2002",
+            "_id": "68e47dd9468ab03eb8f3d7d1"
+          }
+        ],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e47dd9468ab03eb8f3d7d0",
+        "createdAt": "2025-10-07T02:41:29.186Z",
+        "updatedAt": "2025-10-07T02:41:29.186Z"
+      }
+    ],
+    "totalVotes": 1,
+    "isActive": true,
+    "trend": true,
+    "popular": true,
+    "createdBy": "68e07863b612674e825b0ad5",
+    "voters": [],
+    "createdAt": "2025-10-07T02:37:37.930Z",
+    "updatedAt": "2025-10-07T03:01:48.159Z",
+    "__v": 1
+  },
+  {
+    "title": "EN GÜZEL OYUNCU",
+    "description": "En güzel yerli kadın oyuncular",
+    "headerText": "Size göre en güzel oyuncuyu seçin",
+    "footerText": "Türk dizi ve sinema dünyasında güzellikleri ve yetenekleriyle öne çıkan en güzel Türk kadın oyuncular, geniş bir hayran kitlesine sahiptir. Fahriye Evcen, Serenay Sarıkaya, Hande Erçel ve Neslihan Atagül gibi isimler hem başarılı oyunculukları hem de zarif görünümleriyle dikkat çekmektedir. Ekranların sevilen yüzleri olan bu oyuncular, projeleriyle uluslararası alanda da tanınarak Türk televizyon ve sinema sektörünün gücünü temsil etmektedir.",
+    "stats": {
+      "totalComparisons": 0,
+      "averageVotesPerOption": 0.2,
+      "mostPopularOption": "68e47f53468ab03eb8f3da7e"
+    },
+    "endDate": null,
+    "_id": "68e47f53468ab03eb8f3da77",
+    "coverImage": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759804966/dmgonuap30qx8ab9kjhe.jpg",
+    "category": "68e47e87468ab03eb8f3da74",
+    "options": [
+      {
+        "title": "Aslı Tandoğan",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759805078/ns7i8qzvjld5qa1ujj7s.png",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e47f53468ab03eb8f3da78",
+        "createdAt": "2025-10-07T02:47:47.267Z",
+        "updatedAt": "2025-10-07T02:47:47.267Z"
+      },
+      {
+        "title": "Beren Saat",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759805089/gm9s5iempq2dgrr6fk7x.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e47f53468ab03eb8f3da79",
+        "createdAt": "2025-10-07T02:47:47.267Z",
+        "updatedAt": "2025-10-07T02:47:47.267Z"
+      },
+      {
+        "title": "Burcu Biricik",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759805108/qibixfli3nirblsiqebw.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e47f53468ab03eb8f3da7a",
+        "createdAt": "2025-10-07T02:47:47.267Z",
+        "updatedAt": "2025-10-07T02:47:47.267Z"
+      },
+      {
+        "title": "Demet Özdemir",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759805119/rohlaqkepojgp66fxjui.jpg",
+        "customFields": [],
+        "votes": 1,
+        "winRate": 50,
+        "_id": "68e47f53468ab03eb8f3da7b",
+        "createdAt": "2025-10-07T02:47:47.267Z",
+        "updatedAt": "2025-10-07T02:49:01.070Z"
+      },
+      {
+        "title": "Ebru Şahin",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759805130/szzc6sk6rvlh2cbjyosi.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e47f53468ab03eb8f3da7c",
+        "createdAt": "2025-10-07T02:47:47.267Z",
+        "updatedAt": "2025-10-07T02:47:47.267Z"
+      },
+      {
+        "title": "Elçin Sangu",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759805147/at7fhxszbru7jijtuv4n.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e47f53468ab03eb8f3da7d",
+        "createdAt": "2025-10-07T02:47:47.267Z",
+        "updatedAt": "2025-10-07T02:47:47.267Z"
+      },
+      {
+        "title": "Hande Erçel",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759805162/lvvnphfjs4xpgvhzrrb2.jpg",
+        "customFields": [],
+        "votes": 1,
+        "winRate": 50,
+        "_id": "68e47f53468ab03eb8f3da7e",
+        "createdAt": "2025-10-07T02:47:47.267Z",
+        "updatedAt": "2025-10-07T04:21:58.502Z"
+      },
+      {
+        "title": "Öykü Karayel",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759805177/gcc2ytt88tsrwkky9wdn.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e47f53468ab03eb8f3da7f",
+        "createdAt": "2025-10-07T02:47:47.267Z",
+        "updatedAt": "2025-10-07T02:47:47.267Z"
+      },
+      {
+        "title": "Özge Gürel",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759805192/k00psfajrjwogmnunlod.png",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e47f53468ab03eb8f3da80",
+        "createdAt": "2025-10-07T02:47:47.267Z",
+        "updatedAt": "2025-10-07T02:47:47.267Z"
+      },
+      {
+        "title": "Özge Türer",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759805204/cvkimd3ygvxsiap1x0dw.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e47f53468ab03eb8f3da81",
+        "createdAt": "2025-10-07T02:47:47.267Z",
+        "updatedAt": "2025-10-07T02:47:47.267Z"
+      }
+    ],
+    "totalVotes": 2,
+    "isActive": true,
+    "trend": true,
+    "popular": true,
+    "createdBy": "68e07863b612674e825b0ad5",
+    "voters": [
+      {
+        "user": "68e07863b612674e825b0ad5",
+        "_id": "68e47f9c468ab03eb8f3de08",
+        "votedAt": "2025-10-07T02:49:00.793Z"
+      }
+    ],
+    "createdAt": "2025-10-07T02:47:47.267Z",
+    "updatedAt": "2025-10-07T04:21:58.502Z",
+    "__v": 0
+  },
+  {
+    "title": "EN İYİ TAKIM",
+    "description": "En iyi futbol takımları, en pahalı kadrolar",
+    "headerText": "Sizin için en iyi takımı seçin",
+    "footerText": "Dünya futbolunun zirvesinde yer alan en iyi futbol takımları, kazandıkları kupalar, efsane oyuncuları ve tarihi başarılarıyla öne çıkmaktadır. Real Madrid, Barcelona, Bayern Münih, Manchester United ve Liverpool, hem Şampiyonlar Ligi zaferleri hem de lig başarılarıyla futbolun devleri arasında gösterilir.",
+    "stats": {
+      "totalComparisons": 0,
+      "averageVotesPerOption": 0.1,
+      "mostPopularOption": "68e482cc468ab03eb8f3ea11"
+    },
+    "endDate": null,
+    "_id": "68e482cc468ab03eb8f3ea0a",
+    "coverImage": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759805865/wdpdv3w07zlga4vhw73r.webp",
+    "category": "68e4448f5cac204ca5932fa7",
+    "options": [
+      {
+        "title": "ARSENAL",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759805926/jtrcjbysngpfiijoihhc.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e482cc468ab03eb8f3ea0b",
+        "createdAt": "2025-10-07T03:02:36.094Z",
+        "updatedAt": "2025-10-07T03:02:36.094Z"
+      },
+      {
+        "title": "BARCELONA",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759805937/cjx0jp02sm1b1nk4evr6.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e482cc468ab03eb8f3ea0c",
+        "createdAt": "2025-10-07T03:02:36.094Z",
+        "updatedAt": "2025-10-07T03:02:36.094Z"
+      },
+      {
+        "title": "BAYERN MÜBİH",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759805948/utpm6dro1strrwh88aj0.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e482cc468ab03eb8f3ea0d",
+        "createdAt": "2025-10-07T03:02:36.094Z",
+        "updatedAt": "2025-10-07T03:02:36.094Z"
+      },
+      {
+        "title": "CHELSEA",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759805957/fcpz9kmrrpvsnlepjsa0.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e482cc468ab03eb8f3ea0e",
+        "createdAt": "2025-10-07T03:02:36.094Z",
+        "updatedAt": "2025-10-07T03:02:36.094Z"
+      },
+      {
+        "title": "LİVERPOOL",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759805966/exdtzinq3gm4fl7w3t44.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e482cc468ab03eb8f3ea0f",
+        "createdAt": "2025-10-07T03:02:36.094Z",
+        "updatedAt": "2025-10-07T03:02:36.094Z"
+      },
+      {
+        "title": "MANCHESTER CİTY",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759805975/dtgzblkkkxr2ghhbdxjz.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e482cc468ab03eb8f3ea10",
+        "createdAt": "2025-10-07T03:02:36.094Z",
+        "updatedAt": "2025-10-07T03:02:36.094Z"
+      },
+      {
+        "title": "MANCHESTER UNİTED",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759805985/rnzeefg3wbix3u6xwiuy.jpg",
+        "customFields": [],
+        "votes": 1,
+        "winRate": 100,
+        "_id": "68e482cc468ab03eb8f3ea11",
+        "createdAt": "2025-10-07T03:02:36.094Z",
+        "updatedAt": "2025-10-07T15:46:53.251Z"
+      },
+      {
+        "title": "PARİS SG",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759806005/a66qythrpoveymfgapyr.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e482cc468ab03eb8f3ea12",
+        "createdAt": "2025-10-07T03:02:36.094Z",
+        "updatedAt": "2025-10-07T03:02:36.094Z"
+      },
+      {
+        "title": "REAL MADRİD",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759806016/bq5ln7xprgeud7okk3gx.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e482cc468ab03eb8f3ea13",
+        "createdAt": "2025-10-07T03:02:36.094Z",
+        "updatedAt": "2025-10-07T03:02:36.094Z"
+      },
+      {
+        "title": "TOTTENHAM HOTSPUR",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759806034/djtfnhnrz2yiulzc17pn.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e482cc468ab03eb8f3ea14",
+        "createdAt": "2025-10-07T03:02:36.094Z",
+        "updatedAt": "2025-10-07T03:02:36.094Z"
+      }
+    ],
+    "totalVotes": 1,
+    "isActive": true,
+    "trend": false,
+    "popular": true,
+    "createdBy": "68e07863b612674e825b0ad5",
+    "voters": [],
+    "createdAt": "2025-10-07T03:02:36.094Z",
+    "updatedAt": "2025-10-07T15:46:53.252Z",
+    "__v": 0
+  },
+  {
+    "title": "EN İYİ YABANCI DİZİLER",
+    "description": "En iyi ve kaliteli yabancı diziler",
+    "headerText": "Sizin için en iyi diziyi seçin",
+    "footerText": "Dünya genelinde milyonlarca izleyiciye ulaşan en iyi ve kaliteli yabancı diziler, güçlü senaryoları, etkileyici oyunculukları ve sinematografileriyle öne çıkmaktadır. Game of Thrones, Breaking Bad, Peaky Blinders, The Crown ve Stranger Things gibi yapımlar, hem eleştirmenlerden tam not almış hem de geniş hayran kitleleri oluşturmuştur.",
+    "stats": {
+      "totalComparisons": 0,
+      "averageVotesPerOption": 0,
+      "mostPopularOption": "68e48584468ab03eb8f3eff1"
+    },
+    "endDate": null,
+    "_id": "68e484ae468ab03eb8f3ee1f",
+    "coverImage": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759806634/luuucvjolkuv6upm246y.jpg",
+    "category": "68e48343468ab03eb8f3ecd1",
+    "options": [
+      {
+        "title": "Breaking Bad",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759806728/fozrflhbvxnq9uxwzcva.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e484ae468ab03eb8f3ee20",
+        "createdAt": "2025-10-07T03:10:38.355Z",
+        "updatedAt": "2025-10-07T03:12:30.128Z"
+      },
+      {
+        "title": "Dexter",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759806739/xyjsools3tz1vtwd8r2u.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e484ae468ab03eb8f3ee21",
+        "createdAt": "2025-10-07T03:10:38.355Z",
+        "updatedAt": "2025-10-07T03:12:30.128Z"
+      },
+      {
+        "title": "Friends",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759806765/coolhlvf5imk8uuwlb22.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e48584468ab03eb8f3efea",
+        "createdAt": "2025-10-07T03:14:12.001Z",
+        "updatedAt": "2025-10-07T03:14:12.001Z"
+      },
+      {
+        "title": "Game of Thrones",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759806775/coc9tcpdluomucxjydj9.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e48584468ab03eb8f3efeb",
+        "createdAt": "2025-10-07T03:14:12.001Z",
+        "updatedAt": "2025-10-07T03:14:12.001Z"
+      },
+      {
+        "title": "House",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759806790/u37pt91klgycwtwx1l60.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e48584468ab03eb8f3efec",
+        "createdAt": "2025-10-07T03:14:12.001Z",
+        "updatedAt": "2025-10-07T03:14:12.001Z"
+      },
+      {
+        "title": "Sherlock",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759806800/xgbf0fq1lrhnwtxdxmjd.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e48584468ab03eb8f3efed",
+        "createdAt": "2025-10-07T03:14:12.001Z",
+        "updatedAt": "2025-10-07T03:14:12.001Z"
+      },
+      {
+        "title": "The Office",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759806808/oiux4bcyr7jerxsiunz8.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e48584468ab03eb8f3efee",
+        "createdAt": "2025-10-07T03:14:12.001Z",
+        "updatedAt": "2025-10-07T03:14:12.001Z"
+      },
+      {
+        "title": "The Sopranos",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759806820/y2njdavgnzvcrzk7lema.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e48584468ab03eb8f3efef",
+        "createdAt": "2025-10-07T03:14:12.001Z",
+        "updatedAt": "2025-10-07T03:14:12.001Z"
+      },
+      {
+        "title": "The Wire",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759806830/qstmvysw25ytjqfi11d9.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e48584468ab03eb8f3eff0",
+        "createdAt": "2025-10-07T03:14:12.001Z",
+        "updatedAt": "2025-10-07T03:14:12.001Z"
+      },
+      {
+        "title": "True Dedective",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759806840/xcsbraxh7pdn0hqy50g2.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e48584468ab03eb8f3eff1",
+        "createdAt": "2025-10-07T03:14:12.001Z",
+        "updatedAt": "2025-10-07T03:14:12.001Z"
+      }
+    ],
+    "totalVotes": 0,
+    "isActive": true,
+    "trend": false,
+    "popular": true,
+    "createdBy": "68e07863b612674e825b0ad5",
+    "voters": [],
+    "createdAt": "2025-10-07T03:10:38.355Z",
+    "updatedAt": "2025-10-07T03:18:00.478Z",
+    "__v": 1
+  },
+  {
+    "title": "EN İYİ OYUNCU",
+    "description": "En başarılı Hollywood oyuncuları",
+    "headerText": "En iyi oyuncuyu seçin",
+    "footerText": "",
+    "stats": {
+      "totalComparisons": 0,
+      "averageVotesPerOption": 0.1,
+      "mostPopularOption": "68e48e9552a98e829b663c0d"
+    },
+    "endDate": null,
+    "_id": "68e48e9552a98e829b663c08",
+    "coverImage": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759808895/nmm6u47i0p8g5jhr9dhp.jpg",
+    "category": "68e47e87468ab03eb8f3da74",
+    "options": [
+      {
+        "title": "Bradley Pitt",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759808980/jqcuy2xvvytaxgnuqxvc.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e48e9552a98e829b663c09",
+        "createdAt": "2025-10-07T03:52:53.163Z",
+        "updatedAt": "2025-10-07T03:52:53.163Z"
+      },
+      {
+        "title": "George Clooney",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809001/wkfnjmotyggm4so1axee.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e48e9552a98e829b663c0a",
+        "createdAt": "2025-10-07T03:52:53.163Z",
+        "updatedAt": "2025-10-07T03:52:53.163Z"
+      },
+      {
+        "title": "Johnny Depp",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809051/snv4cbncdklly2abbpfk.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e48e9552a98e829b663c0b",
+        "createdAt": "2025-10-07T03:52:53.163Z",
+        "updatedAt": "2025-10-07T03:52:53.163Z"
+      },
+      {
+        "title": "Katy Perry",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809083/eedh5lrascwpblpveymv.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e48e9552a98e829b663c0c",
+        "createdAt": "2025-10-07T03:52:53.163Z",
+        "updatedAt": "2025-10-07T03:52:53.163Z"
+      },
+      {
+        "title": "Leonardo DiCaprio",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809096/ftiiyowygjogde6fmh3h.jpg",
+        "customFields": [],
+        "votes": 1,
+        "winRate": 100,
+        "_id": "68e48e9552a98e829b663c0d",
+        "createdAt": "2025-10-07T03:52:53.163Z",
+        "updatedAt": "2025-10-07T03:56:27.921Z"
+      },
+      {
+        "title": "Matthew Mcconaughey",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809109/me2waa3cb1ayerruicaa.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e48e9552a98e829b663c0e",
+        "createdAt": "2025-10-07T03:52:53.163Z",
+        "updatedAt": "2025-10-07T03:52:53.163Z"
+      },
+      {
+        "title": "Quentin Tarantino",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809122/oyekkn441vuztytiw6zu.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e48e9552a98e829b663c0f",
+        "createdAt": "2025-10-07T03:52:53.163Z",
+        "updatedAt": "2025-10-07T03:52:53.163Z"
+      },
+      {
+        "title": "Rihanna",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809134/u2khcgsvu3qai6kdftjr.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e48e9552a98e829b663c10",
+        "createdAt": "2025-10-07T03:52:53.163Z",
+        "updatedAt": "2025-10-07T03:52:53.163Z"
+      },
+      {
+        "title": "Robert De Niro",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809149/wqw033f9wb2mm2dv2sro.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e48e9552a98e829b663c11",
+        "createdAt": "2025-10-07T03:52:53.163Z",
+        "updatedAt": "2025-10-07T03:52:53.163Z"
+      },
+      {
+        "title": "Scarlett Johansson",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809163/xgarvn8m02eesfjafsba.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e48e9552a98e829b663c12",
+        "createdAt": "2025-10-07T03:52:53.164Z",
+        "updatedAt": "2025-10-07T03:52:53.164Z"
+      }
+    ],
+    "totalVotes": 1,
+    "isActive": true,
+    "trend": false,
+    "popular": true,
+    "createdBy": "68e07863b612674e825b0ad5",
+    "voters": [],
+    "createdAt": "2025-10-07T03:52:53.164Z",
+    "updatedAt": "2025-10-07T03:56:27.921Z",
+    "__v": 0
+  },
+  {
+    "title": "EN İYİ MEYVE",
+    "description": "En lezzetli ve sevilen meyveler",
+    "headerText": "En sevdiğiniz meyveyi seçin",
+    "footerText": "Dünya genelinde en lezzetli ve sevilen meyveler, sağlıklı yapıları ve eşsiz tatlarıyla sofraların vazgeçilmezidir. Çilek, karpuz, elma, muz ve üzüm, hem taze tüketimde hem de tatlı ve içeceklerde en çok tercih edilen meyveler arasında yer alır. Vitamin ve mineral açısından zengin bu meyveler, lezzetleri kadar sağlık faydalarıyla da öne çıkmaktadır.",
+    "stats": {
+      "totalComparisons": 0,
+      "averageVotesPerOption": 0.07692307692307693,
+      "mostPopularOption": "68e4910852a98e829b6655b1"
+    },
+    "_id": "68e48f0e52a98e829b663d1b",
+    "coverImage": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809647/pd49ughblwwbx7yikv36.jpg",
+    "category": "68e48f0852a98e829b663d18",
+    "options": [
+      {
+        "title": "Ananas",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809665/oknfghq1y4t4yuhoccw6.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e48f0e52a98e829b663d1c",
+        "createdAt": "2025-10-07T03:54:54.122Z",
+        "updatedAt": "2025-10-07T04:03:20.481Z"
+      },
+      {
+        "title": "Armut",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809673/r686knzf29syffwgsdbk.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e48f0e52a98e829b663d1d",
+        "createdAt": "2025-10-07T03:54:54.122Z",
+        "updatedAt": "2025-10-07T04:03:20.481Z"
+      },
+      {
+        "title": "Çilek",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809699/ukezzwghvsedsfsjy0j2.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e4910852a98e829b6655ae",
+        "createdAt": "2025-10-07T04:03:20.481Z",
+        "updatedAt": "2025-10-07T04:03:20.481Z"
+      },
+      {
+        "title": "Elma",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809708/y0uaycircxqbojtn4hkg.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e4910852a98e829b6655af",
+        "createdAt": "2025-10-07T04:03:20.481Z",
+        "updatedAt": "2025-10-07T04:03:20.481Z"
+      },
+      {
+        "title": "Erik",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809715/euimqcy5uttrdwkgp74i.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e4910852a98e829b6655b0",
+        "createdAt": "2025-10-07T04:03:20.481Z",
+        "updatedAt": "2025-10-07T04:03:20.481Z"
+      },
+      {
+        "title": "Karpuz",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809723/jkhup7wb3nqvjiqjsqcd.jpg",
+        "customFields": [],
+        "votes": 1,
+        "winRate": 100,
+        "_id": "68e4910852a98e829b6655b1",
+        "createdAt": "2025-10-07T04:03:20.481Z",
+        "updatedAt": "2025-10-07T04:11:44.363Z"
+      },
+      {
+        "title": "Kiraz",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809731/tddwfspdyjzoawomtjis.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e4910852a98e829b6655b2",
+        "createdAt": "2025-10-07T04:03:20.481Z",
+        "updatedAt": "2025-10-07T04:03:20.481Z"
+      },
+      {
+        "title": "Kivi",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809739/rvfyq6qyt0r2qksgcanl.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e4910852a98e829b6655b3",
+        "createdAt": "2025-10-07T04:03:20.481Z",
+        "updatedAt": "2025-10-07T04:03:20.481Z"
+      },
+      {
+        "title": "Mandalina",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809746/e0st6pinq2m8l7bc5zzf.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e4910852a98e829b6655b4",
+        "createdAt": "2025-10-07T04:03:20.481Z",
+        "updatedAt": "2025-10-07T04:03:20.481Z"
+      },
+      {
+        "title": "Muz",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809760/b1k8nnkn1sws27syvwkn.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e4910852a98e829b6655b5",
+        "createdAt": "2025-10-07T04:03:20.481Z",
+        "updatedAt": "2025-10-07T04:03:20.481Z"
+      },
+      {
+        "title": "Portakal",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809766/h1cuzn01amywvdebnd70.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e4910852a98e829b6655b6",
+        "createdAt": "2025-10-07T04:03:20.481Z",
+        "updatedAt": "2025-10-07T04:03:20.481Z"
+      },
+      {
+        "title": "Şeftali",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809774/jn7xbfxyftwoga83buru.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e4910852a98e829b6655b7",
+        "createdAt": "2025-10-07T04:03:20.481Z",
+        "updatedAt": "2025-10-07T04:03:20.481Z"
+      },
+      {
+        "title": "Üzüm",
+        "image": "https://res.cloudinary.com/da2qwsrbv/image/upload/v1759809782/awhbsvpy71iuuipc9m4p.jpg",
+        "customFields": [],
+        "votes": 0,
+        "winRate": 0,
+        "_id": "68e4910852a98e829b6655b8",
+        "createdAt": "2025-10-07T04:03:20.481Z",
+        "updatedAt": "2025-10-07T04:03:20.481Z"
+      }
+    ],
+    "totalVotes": 1,
+    "isActive": false,
+    "trend": false,
+    "popular": true,
+    "createdBy": "68e07863b612674e825b0ad5",
+    "voters": [],
+    "createdAt": "2025-10-07T03:54:54.122Z",
+    "updatedAt": "2025-10-07T17:10:09.167Z",
+    "__v": 1,
+    "endDate": "2025-10-07T17:09:00.000Z"
+  }
+]
