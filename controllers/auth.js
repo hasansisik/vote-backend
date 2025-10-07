@@ -492,6 +492,25 @@ const editProfile = async (req, res) => {
 
     // Handle password
     if (req.body.password) {
+      // Check if current password is provided and correct
+      if (req.body.currentPassword) {
+        const isCurrentPasswordCorrect = await bcrypt.compare(
+          req.body.currentPassword,
+          user.auth.password
+        );
+        
+        if (!isCurrentPasswordCorrect) {
+          return res.status(400).json({
+            message: "Mevcut şifre yanlış."
+          });
+        }
+      } else {
+        return res.status(400).json({
+          message: "Mevcut şifre gereklidir."
+        });
+      }
+      
+      // Update password
       user.auth.password = req.body.password;
       await user.auth.save();
     }
