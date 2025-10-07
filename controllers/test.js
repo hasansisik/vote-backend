@@ -33,6 +33,14 @@ const createTest = async (req, res, next) => {
       if (!option.title || !option.image) {
         throw new CustomError.BadRequestError("Her seçenek için başlık ve görsel gereklidir");
       }
+      
+      // Custom fields validation - sadece dolu olanları kontrol et
+      if (option.customFields && Array.isArray(option.customFields)) {
+        option.customFields = option.customFields.filter(field => 
+          field.fieldName && field.fieldValue && 
+          field.fieldName.trim() !== '' && field.fieldValue.trim() !== ''
+        );
+      }
     }
 
     const test = new Test({
@@ -427,18 +435,26 @@ const updateTest = async (req, res, next) => {
       const existingOptions = test.options || [];
       
       updates.options.forEach((newOption, index) => {
+        // Custom fields validation - sadece dolu olanları al
+        const cleanedCustomFields = newOption.customFields && Array.isArray(newOption.customFields) 
+          ? newOption.customFields.filter(field => 
+              field.fieldName && field.fieldValue && 
+              field.fieldName.trim() !== '' && field.fieldValue.trim() !== ''
+            )
+          : [];
+        
         if (existingOptions[index]) {
           // Mevcut option varsa, sadece title, image ve customFields'i güncelle
           existingOptions[index].title = newOption.title;
           existingOptions[index].image = newOption.image;
-          existingOptions[index].customFields = newOption.customFields || [];
+          existingOptions[index].customFields = cleanedCustomFields;
           // votes ve winRate'i koru
         } else {
           // Yeni option ekle
           existingOptions.push({
             title: newOption.title,
             image: newOption.image,
-            customFields: newOption.customFields || [],
+            customFields: cleanedCustomFields,
             votes: 0,
             winRate: 0
           });
