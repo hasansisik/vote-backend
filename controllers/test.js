@@ -166,15 +166,6 @@ const voteOnTest = async (req, res, next) => {
     let userId = null;
     if (req.user && req.user.userId) {
       userId = req.user.userId;
-      
-      // Kullanıcının daha önce oy verip vermediğini kontrol et
-      const hasVoted = test.voters.some(voter => 
-        voter.user.toString() === userId.toString()
-      );
-      
-      if (hasVoted) {
-        throw new CustomError.BadRequestError("Bu teste zaten oy verdiniz");
-      }
     }
 
     // Seçeneği bul ve oy ver
@@ -186,8 +177,6 @@ const voteOnTest = async (req, res, next) => {
     option.votes += 1;
     
     if (userId) {
-      test.voters.push({ user: userId });
-      
       // Kullanıcının oy verdiği testleri güncelle
       const user = await User.findById(userId);
       if (user) {
@@ -224,38 +213,11 @@ const getTestResults = async (req, res, next) => {
       throw new CustomError.NotFoundError("Test bulunamadı");
     }
 
-    // Get all users who voted on this test
-    const usersWhoVoted = await User.find({
-      'votedTests.test': id
-    });
-
-    // Count votes for each option
-    const optionVoteCounts = {};
-    test.options.forEach(option => {
-      optionVoteCounts[option._id.toString()] = 0;
-    });
-
-    // Count votes from user votedTests (authenticated users)
-    usersWhoVoted.forEach(user => {
-      const votedTest = user.votedTests.find(vt => vt.test.toString() === id);
-      if (votedTest && votedTest.selectedOption) {
-        const optionId = votedTest.selectedOption.toString();
-        optionVoteCounts[optionId] = (optionVoteCounts[optionId] || 0) + 1;
-      }
-    });
-
-    // For now, use test.options.votes as the source of truth
-    // This includes both authenticated and guest votes
-    test.options.forEach(option => {
-      const optionId = option._id.toString();
-      optionVoteCounts[optionId] = option.votes;
-    });
-
     const totalVotes = test.totalVotes || 0;
 
-    // Create results with percentages
+    // Create results with percentages using test.options.votes
     const results = test.options.map(option => {
-      const voteCount = optionVoteCounts[option._id.toString()] || 0;
+      const voteCount = option.votes || 0;
       const percentage = totalVotes > 0 ? (voteCount / totalVotes) * 100 : 0;
       
       return {
@@ -289,8 +251,8 @@ const getTestResults = async (req, res, next) => {
       statistics: {
         totalVotes: totalVotes,
         completedSessions: totalVotes,
-        userSessions: totalVotes,
-        guestSessions: 0
+        userSessions: 0,
+        guestSessions: totalVotes
       }
     });
   } catch (error) {
