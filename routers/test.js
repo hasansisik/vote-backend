@@ -28,7 +28,7 @@ router.get('/rankings', getGlobalRankings);
 router.get('/stats', getGlobalStats);
 router.get('/category/:category', getTestsByCategory);
 router.get('/category-slug/:slug', getTestsByCategorySlug);
-router.get('/:id', getSingleTest);
+router.get('/:id', isOptionalAuthenticated, getSingleTest);
 router.get('/:id/results', getTestResults);
 router.post('/:id/vote', isOptionalAuthenticated, voteOnTest);
 

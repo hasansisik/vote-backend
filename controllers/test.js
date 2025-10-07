@@ -170,7 +170,8 @@ const getSingleTest = async (req, res, next) => {
       throw new CustomError.NotFoundError("Test bulunamadı");
     }
 
-    // Admin için aktif olmayan testleri de göster
+    // Admin kullanıcılar için aktif olmayan testleri de göster
+    // Sadece public istekler için aktif kontrolü yap
     if (!test.isActive && (!req.user || req.user.role !== 'admin')) {
       throw new CustomError.BadRequestError("Bu test aktif değil");
     }
