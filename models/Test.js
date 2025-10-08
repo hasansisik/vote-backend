@@ -48,7 +48,7 @@ const TestSchema = new mongoose.Schema({
   slug: {
     type: String,
     unique: true,
-    required: true,
+    required: false,
     trim: true,
     lowercase: true
   },
@@ -155,8 +155,8 @@ TestSchema.virtual('topOption').get(function() {
 
 // Pre-save middleware - İstatistikleri güncelle, slug oluştur ve endDate kontrolü
 TestSchema.pre('save', async function(next) {
-  // Slug oluştur - sadece yeni test oluşturulurken veya title değiştiğinde
-  if (this.isNew || this.isModified('title')) {
+  // Slug oluştur - slug yoksa, yeni test oluşturulurken veya title değiştiğinde
+  if (!this.slug || this.isNew || this.isModified('title')) {
     let baseSlug = generateSlug(this.title.tr);
     let slug = baseSlug;
     let counter = 1;
