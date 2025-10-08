@@ -624,9 +624,10 @@ const updateTest = async (req, res, next) => {
         if (field === 'endDate') {
           test[field] = updates[field] ? new Date(updates[field]) : null;
         } else if (field === 'isActive') {
-          // Eğer test aktif ediliyorsa ve endDate geçmişse, endDate'i temizle
+          // Eğer test aktif ediliyorsa ve endDate geçmişse, endDate'i tamamen kaldır
           if (updates[field] === true && test.endDate && new Date() > test.endDate) {
-            test.endDate = null;
+            test.endDate = undefined;
+            test.markModified('endDate');
           }
           test[field] = updates[field];
         } else {
@@ -917,7 +918,8 @@ module.exports = {
   resetTestVotes,
   getUserVotedTests,
   getTrendTests,
-  getGlobalRankings
+  getGlobalRankings,
+  cleanExpiredEndDates
 };
 
 // Get Global Statistics
@@ -940,6 +942,32 @@ const getGlobalStats = async (req, res, next) => {
         totalVotes,
         totalUsers
       }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Clean expired endDates (Admin only)
+const cleanExpiredEndDates = async (req, res, next) => {
+  try {
+    const now = new Date();
+    
+    // Geçmiş tarihli endDate'leri temizle
+    const result = await Test.updateMany(
+      { 
+        endDate: { $lte: now },
+        isActive: true 
+      },
+      { 
+        $unset: { endDate: 1 }
+      }
+    );
+    
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: `${result.modifiedCount} testin geçmiş endDate'i temizlendi`,
+      modifiedCount: result.modifiedCount
     });
   } catch (error) {
     next(error);

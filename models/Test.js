@@ -197,11 +197,11 @@ TestSchema.pre('save', async function(next) {
   
   // EndDate ve isActive kontrolü
   if (this.endDate && new Date() > this.endDate) {
-    // Eğer endDate geçmişse ve test aktif edilmeye çalışılıyorsa, endDate'i temizle
+    // Eğer endDate geçmişse ve test aktif edilmeye çalışılıyorsa, endDate'i tamamen kaldır
     if (this.isActive && this.isModified('isActive')) {
-      this.endDate = null;
-    } else {
-      // Aksi halde testi pasif yap
+      this.endDate = undefined;
+    } else if (!this.isModified('isActive')) {
+      // Eğer isActive değiştirilmemişse ve endDate geçmişse, testi pasif yap
       this.isActive = false;
     }
   }
