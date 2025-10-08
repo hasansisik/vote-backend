@@ -185,6 +185,33 @@ const getSingleTest = async (req, res, next) => {
   }
 };
 
+// Get Single Test by Slug
+const getSingleTestBySlug = async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+
+    const test = await Test.findBySlug(slug)
+      .populate('voters.user', 'name surname');
+
+    if (!test) {
+      throw new CustomError.NotFoundError("Test bulunamadı");
+    }
+
+    // Admin kullanıcılar için aktif olmayan testleri de göster
+    // Sadece public istekler için aktif kontrolü yap
+    if (!test.isActive && (!req.user || req.user.role !== 'admin')) {
+      throw new CustomError.BadRequestError("Bu test aktif değil");
+    }
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      test
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Vote on Test
 const voteOnTest = async (req, res, next) => {
   try {
@@ -249,6 +276,71 @@ const voteOnTest = async (req, res, next) => {
   }
 };
 
+// Vote on Test by Slug
+const voteOnTestBySlug = async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+    const { optionId } = req.body;
+
+    if (!optionId) {
+      throw new CustomError.BadRequestError("Seçenek ID gereklidir");
+    }
+
+    const test = await Test.findBySlug(slug);
+    if (!test) {
+      throw new CustomError.NotFoundError("Test bulunamadı");
+    }
+
+    if (!test.isActive) {
+      throw new CustomError.BadRequestError("Bu test aktif değil");
+    }
+
+    // Kullanıcı giriş yapmış mı kontrol et
+    let userId = null;
+    if (req.user && req.user.userId) {
+      userId = req.user.userId;
+    }
+
+    // Seçeneği bul ve oy ver
+    const option = test.options.id(optionId);
+    if (!option) {
+      throw new CustomError.NotFoundError("Seçenek bulunamadı");
+    }
+
+    option.votes += 1;
+    
+    if (userId) {
+      // Kullanıcının oy verdiği testleri güncelle
+      const user = await User.findById(userId);
+      if (user) {
+        await user.voteOnTest(test._id, optionId);
+        
+        // Send test voted notification (async, don't wait)
+        sendTestVotedNotification(userId, {
+          testId: test._id,
+          testTitle: test.title
+        }).catch(console.error);
+      }
+    }
+
+    await test.save();
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Oy başarıyla verildi",
+      test: {
+        _id: test._id,
+        slug: test.slug,
+        title: test.title,
+        totalVotes: test.totalVotes,
+        options: test.options
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Get Test Results (Ranking) - Updated to use vote sessions
 const getTestResults = async (req, res, next) => {
   try {
@@ -283,6 +375,65 @@ const getTestResults = async (req, res, next) => {
       success: true,
       test: {
         _id: test._id,
+        title: test.title,
+        description: test.description,
+        headerText: test.headerText,
+        footerText: test.footerText,
+        category: test.category,
+        totalVotes: totalVotes,
+        createdBy: test.createdBy,
+        createdAt: test.createdAt
+      },
+      results: results.map((result, index) => ({
+        rank: index + 1,
+        ...result
+      })),
+      statistics: {
+        totalVotes: totalVotes,
+        completedSessions: totalVotes,
+        userSessions: 0,
+        guestSessions: totalVotes
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get Test Results by Slug
+const getTestResultsBySlug = async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+
+    const test = await Test.findBySlug(slug);
+
+    if (!test) {
+      throw new CustomError.NotFoundError("Test bulunamadı");
+    }
+
+    const totalVotes = test.totalVotes || 0;
+
+    // Create results with percentages using test.options.votes
+    const results = test.options.map(option => {
+      const voteCount = option.votes || 0;
+      const percentage = totalVotes > 0 ? (voteCount / totalVotes) * 100 : 0;
+      
+      return {
+        _id: option._id,
+        title: option.title,
+        image: option.image,
+        customFields: option.customFields,
+        votes: voteCount,
+        percentage: Math.round(percentage * 10) / 10, // Round to 1 decimal place
+        winRate: percentage // Use percentage as winRate
+      };
+    }).sort((a, b) => b.votes - a.votes);
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      test: {
+        _id: test._id,
+        slug: test.slug,
         title: test.title,
         description: test.description,
         headerText: test.headerText,
@@ -744,8 +895,11 @@ module.exports = {
   createTest,
   getAllTests,
   getSingleTest,
+  getSingleTestBySlug,
   voteOnTest,
+  voteOnTestBySlug,
   getTestResults,
+  getTestResultsBySlug,
   getPopularTests,
   getTestsByCategory,
   getTestsByCategorySlug,

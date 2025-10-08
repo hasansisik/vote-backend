@@ -45,6 +45,13 @@ const TestSchema = new mongoose.Schema({
     de: { type: String, trim: true },
     fr: { type: String, trim: true },
   },
+  slug: {
+    type: String,
+    unique: true,
+    required: true,
+    trim: true,
+    lowercase: true
+  },
   description: {
     tr: { type: String, default: '', trim: true },
     en: { type: String, default: '', trim: true },
@@ -120,6 +127,23 @@ const TestSchema = new mongoose.Schema({
 TestSchema.index({ category: 1, isActive: 1 });
 TestSchema.index({ createdAt: -1 });
 TestSchema.index({ totalVotes: -1 });
+TestSchema.index({ slug: 1 });
+
+// Slug generation function
+const generateSlug = (title) => {
+  return title
+    .toLowerCase()
+    .replace(/ğ/g, 'g')
+    .replace(/ü/g, 'u')
+    .replace(/ş/g, 's')
+    .replace(/ı/g, 'i')
+    .replace(/ö/g, 'o')
+    .replace(/ç/g, 'c')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim('-');
+};
 
 // Virtual field - En popüler seçenek
 TestSchema.virtual('topOption').get(function() {
@@ -129,8 +153,27 @@ TestSchema.virtual('topOption').get(function() {
   );
 });
 
-// Pre-save middleware - İstatistikleri güncelle ve endDate kontrolü
-TestSchema.pre('save', function(next) {
+// Pre-save middleware - İstatistikleri güncelle, slug oluştur ve endDate kontrolü
+TestSchema.pre('save', async function(next) {
+  // Slug oluştur - sadece yeni test oluşturulurken veya title değiştiğinde
+  if (this.isNew || this.isModified('title')) {
+    let baseSlug = generateSlug(this.title.tr);
+    let slug = baseSlug;
+    let counter = 1;
+    
+    // Aynı slug varsa sayı ekle
+    while (true) {
+      const existingTest = await this.constructor.findOne({ slug });
+      if (!existingTest || existingTest._id.toString() === this._id.toString()) {
+        break;
+      }
+      slug = `${baseSlug}-${counter}`;
+      counter++;
+    }
+    
+    this.slug = slug;
+  }
+  
   if (this.options && this.options.length > 0) {
     // Toplam oy sayısını hesapla
     this.totalVotes = this.options.reduce((sum, option) => sum + option.votes, 0);
@@ -231,6 +274,11 @@ TestSchema.statics.updateExpiredTests = async function() {
       isActive: false 
     }
   );
+};
+
+// Static method - Slug'a göre test bul
+TestSchema.statics.findBySlug = function(slug) {
+  return this.findOne({ slug }).populate('createdBy', 'name surname');
 };
 
 const Test = mongoose.model("Test", TestSchema);
