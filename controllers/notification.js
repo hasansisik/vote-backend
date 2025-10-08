@@ -163,7 +163,7 @@ const sendNewVoteNotification = async (userId, testData) => {
       user: userId,
       type: 'new_vote',
       title: 'Yeni Oylama',
-      message: `${testData.categoryName} kategorisinde yeni bir oylama başladı!`,
+      message: `"${testData.categoryName}" kategorisinde yeni bir oylama başladı!`,
       icon: 'vote',
       color: 'blue',
       priority: 'high',

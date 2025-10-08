@@ -81,7 +81,7 @@ const createTest = async (req, res, next) => {
             sendNewVoteNotification(user._id, {
               testId: test._id,
               categoryId: categoryInfo._id,
-              categoryName: categoryInfo.name,
+              categoryName: categoryInfo.name.tr, // Use Turkish name for notification
               categorySlug: categoryInfo.slug
             }).catch(console.error)
           );
