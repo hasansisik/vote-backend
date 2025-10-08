@@ -623,6 +623,12 @@ const updateTest = async (req, res, next) => {
       if (updates[field] !== undefined) {
         if (field === 'endDate') {
           test[field] = updates[field] ? new Date(updates[field]) : null;
+        } else if (field === 'isActive') {
+          // Eğer test aktif ediliyorsa ve endDate geçmişse, endDate'i temizle
+          if (updates[field] === true && test.endDate && new Date() > test.endDate) {
+            test.endDate = null;
+          }
+          test[field] = updates[field];
         } else {
           test[field] = updates[field];
         }

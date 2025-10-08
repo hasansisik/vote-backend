@@ -195,9 +195,15 @@ TestSchema.pre('save', async function(next) {
     this.stats.averageVotesPerOption = this.totalVotes / this.options.length;
   }
   
-  // EndDate kontrolü - eğer endDate geçmişse isActive'i false yap
+  // EndDate ve isActive kontrolü
   if (this.endDate && new Date() > this.endDate) {
-    this.isActive = false;
+    // Eğer endDate geçmişse ve test aktif edilmeye çalışılıyorsa, endDate'i temizle
+    if (this.isActive && this.isModified('isActive')) {
+      this.endDate = null;
+    } else {
+      // Aksi halde testi pasif yap
+      this.isActive = false;
+    }
   }
   
   next();
