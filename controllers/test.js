@@ -246,6 +246,7 @@ const voteOnTest = async (req, res, next) => {
     }
 
     option.votes += 1;
+    test.totalVotes += 1; // Total votes'u manuel olarak güncelle
     
     if (userId) {
       // Kullanıcının oy verdiği testleri güncelle
@@ -310,6 +311,7 @@ const voteOnTestBySlug = async (req, res, next) => {
     }
 
     option.votes += 1;
+    test.totalVotes += 1; // Total votes'u manuel olarak güncelle
     
     if (userId) {
       // Kullanıcının oy verdiği testleri güncelle
