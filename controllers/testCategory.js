@@ -101,7 +101,6 @@ const createTestCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
     
-    console.log('Creating test category with data:', { name, description });
     
     if (!name || !name.tr) {
       throw new BadRequestError('Türkçe kategori adı gereklidir');
@@ -138,7 +137,6 @@ const createTestCategory = async (req, res) => {
       slug
     };
     
-    console.log('Creating category with data:', categoryData);
     
     const category = await TestCategory.create(categoryData);
     
@@ -266,9 +264,7 @@ const deleteTestCategory = async (req, res) => {
     const associatedMenu = await Menu.findOne({ testCategory: id });
     
     if (associatedMenu) {
-      console.log('Deleting associated menu:', associatedMenu._id);
       await Menu.findByIdAndDelete(associatedMenu._id);
-      console.log('Associated menu deleted successfully');
     }
     
     // Delete the test category

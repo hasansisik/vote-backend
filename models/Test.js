@@ -120,7 +120,20 @@ const TestSchema = new mongoose.Schema({
     totalComparisons: { type: Number, default: 0 },
     averageVotesPerOption: { type: Number, default: 0 },
     mostPopularOption: { type: mongoose.Schema.Types.ObjectId, ref: 'Option' }
-  }
+  },
+  // Vote sessions
+  voteSessions: [{
+    sessionId: { type: String, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    isGuest: { type: Boolean, default: true },
+    currentPair: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Option' }],
+    remainingOptions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Option' }],
+    winners: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Option' }],
+    finalWinner: { type: mongoose.Schema.Types.ObjectId, ref: 'Option', default: null },
+    isComplete: { type: Boolean, default: false },
+    startedAt: { type: Date, default: Date.now },
+    completedAt: { type: Date, default: null }
+  }]
 }, { timestamps: true });
 
 // Index'ler
@@ -285,6 +298,89 @@ TestSchema.statics.updateExpiredTests = async function() {
 // Static method - Slug'a göre test bul
 TestSchema.statics.findBySlug = function(slug) {
   return this.findOne({ slug }).populate('createdBy', 'name surname');
+};
+
+// Method - Vote session başlat
+TestSchema.methods.startVoteSession = function(sessionId, userId) {
+  const session = {
+    sessionId,
+    userId: userId || null,
+    isGuest: !userId,
+    currentPair: [],
+    remainingOptions: [],
+    winners: [],
+    finalWinner: null,
+    isComplete: false,
+    startedAt: new Date(),
+    completedAt: null
+  };
+  
+  this.voteSessions.push(session);
+  return this.save();
+};
+
+// Method - Vote session güncelle
+TestSchema.methods.updateVoteSession = function(sessionId, selectedOptionId) {
+  const session = this.voteSessions.find(s => s.sessionId === sessionId);
+  if (!session) {
+    throw new Error('Vote session bulunamadı');
+  }
+  
+  if (session.isComplete) {
+    throw new Error('Bu vote session zaten tamamlanmış');
+  }
+  
+  // Seçilen seçeneği kazanan olarak işaretle
+  const selectedOption = this.options.id(selectedOptionId);
+  if (!selectedOption) {
+    throw new Error('Seçenek bulunamadı');
+  }
+  
+  // Eğer ilk karşılaştırmaysa, currentPair'i ayarla
+  if (session.currentPair.length === 0) {
+    // Test mantığı: Sabit bir oylama sistemi
+    const shuffled = [...this.options].sort((a, b) => {
+      const testIdHash = this._id.toString().slice(-4);
+      const aHash = a._id.toString().slice(-4);
+      const bHash = b._id.toString().slice(-4);
+      return (testIdHash + aHash).localeCompare(testIdHash + bHash);
+    });
+    
+    session.currentPair = [shuffled[0]._id, shuffled[1]._id];
+    session.remainingOptions = shuffled.slice(2).map(opt => opt._id);
+  }
+  
+  // Seçilen seçeneği kazanan olarak işaretle
+  session.winners.push(selectedOptionId);
+  
+  // Eğer hala kullanılacak seçenekler varsa
+  if (session.remainingOptions.length > 0) {
+    const nextOption = session.remainingOptions[0];
+    session.currentPair = [selectedOptionId, nextOption];
+    session.remainingOptions = session.remainingOptions.slice(1);
+  } else {
+    // Tüm seçenekler tükendi - final kazanan
+    session.finalWinner = selectedOptionId;
+    session.isComplete = true;
+    session.completedAt = new Date();
+    
+    // Test'in genel oy sayısını güncelle
+    selectedOption.votes += 1;
+    this.totalVotes += 1;
+  }
+  
+  return this.save();
+};
+
+// Method - Vote session sil
+TestSchema.methods.deleteVoteSession = function(sessionId) {
+  this.voteSessions = this.voteSessions.filter(s => s.sessionId !== sessionId);
+  return this.save();
+};
+
+// Method - Vote session getir
+TestSchema.methods.getVoteSession = function(sessionId) {
+  return this.voteSessions.find(s => s.sessionId === sessionId);
 };
 
 const Test = mongoose.model("Test", TestSchema);

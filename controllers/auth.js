@@ -228,8 +228,6 @@ const getMyProfile = async (req, res, next) => {
       });
     }
 
-    console.log(user.status);
-
     // Check if user is inactive and kick them out
     if (user.status === 'inactive') {
       return res.status(401).json({

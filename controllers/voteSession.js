@@ -174,7 +174,7 @@ const getTestResultsWithStats = async (req, res, next) => {
       throw new CustomError.NotFoundError("Test bulunamadı");
     }
 
-    // Calculate vote statistics from completed sessions
+    // Calculate vote statistics from completed sessions (both user and guest sessions)
     const completedSessions = test.voteSessions.filter(session => session.isComplete && session.finalWinner);
     
     // Count votes for each option
