@@ -901,27 +901,6 @@ const getGlobalRankings = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  createTest,
-  getAllTests,
-  getSingleTest,
-  getSingleTestBySlug,
-  voteOnTest,
-  voteOnTestBySlug,
-  getTestResults,
-  getTestResultsBySlug,
-  getPopularTests,
-  getTestsByCategory,
-  getTestsByCategorySlug,
-  updateTest,
-  deleteTest,
-  resetTestVotes,
-  getUserVotedTests,
-  getTrendTests,
-  getGlobalRankings,
-  cleanExpiredEndDates
-};
-
 // Get Global Statistics
 const getGlobalStats = async (req, res, next) => {
   try {
@@ -974,8 +953,28 @@ const cleanExpiredEndDates = async (req, res, next) => {
   }
 };
 
-// Export getGlobalStats
-module.exports.getGlobalStats = getGlobalStats;
+module.exports = {
+  createTest,
+  getAllTests,
+  getSingleTest,
+  getSingleTestBySlug,
+  voteOnTest,
+  voteOnTestBySlug,
+  getTestResults,
+  getTestResultsBySlug,
+  getPopularTests,
+  getTestsByCategory,
+  getTestsByCategorySlug,
+  updateTest,
+  deleteTest,
+  resetTestVotes,
+  getUserVotedTests,
+  getTrendTests,
+  getGlobalRankings,
+  getGlobalStats,
+  cleanExpiredEndDates
+};
+
 
 
 
