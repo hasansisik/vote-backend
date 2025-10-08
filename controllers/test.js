@@ -479,6 +479,7 @@ const getPopularTests = async (req, res, next) => {
       success: true,
       tests: tests.map(test => ({
         _id: test._id,
+        slug: test.slug,
         title: test.title,
         description: test.description,
         coverImage: test.coverImage,
@@ -574,6 +575,7 @@ const getTestsByCategorySlug = async (req, res, next) => {
       },
       tests: tests.map(test => ({
         _id: test._id,
+        slug: test.slug,
         title: test.title,
         description: test.description,
         coverImage: test.coverImage,
@@ -761,7 +763,7 @@ const getUserVotedTests = async (req, res, next) => {
       user.votedTests.map(async (vote) => {
         const test = await Test.findById(vote.test._id)
           .populate('createdBy', 'name surname')
-          .select('title description category coverImage totalVotes options createdAt');
+          .select('slug title description category coverImage totalVotes options createdAt');
         
         if (!test) return null;
 
@@ -774,6 +776,7 @@ const getUserVotedTests = async (req, res, next) => {
           _id: vote._id,
           test: {
             _id: test._id,
+            slug: test.slug,
             title: test.title,
             description: test.description,
             category: test.category,
@@ -829,6 +832,7 @@ const getTrendTests = async (req, res, next) => {
       success: true,
       tests: trendTests.map(test => ({
         _id: test._id,
+        slug: test.slug,
         title: test.title,
         description: test.description,
         coverImage: test.coverImage,
