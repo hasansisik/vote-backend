@@ -17,7 +17,8 @@ const {
   getUserVotedTests,
   getTrendTests,
   getGlobalRankings,
-  getGlobalStats
+  getGlobalStats,
+  generateSlugsForExistingTests
 } = require('../controllers/test');
 const { isAuthenticated, isAdmin, isOptionalAuthenticated } = require('../middleware/authMiddleware');
 
@@ -50,6 +51,7 @@ router.post('/', isAuthenticated, isAdmin, createTest);
 router.patch('/:id', isAuthenticated, isAdmin, updateTest);
 router.delete('/:id', isAuthenticated, isAdmin, deleteTest);
 router.post('/:id/reset', isAuthenticated, isAdmin, resetTestVotes);
+router.post('/migrate-slugs', isAuthenticated, isAdmin, generateSlugsForExistingTests);
 
 module.exports = router;
 

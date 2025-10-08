@@ -940,5 +940,58 @@ const getGlobalStats = async (req, res, next) => {
 // Export getGlobalStats
 module.exports.getGlobalStats = getGlobalStats;
 
+// Generate slugs for existing tests (Migration function)
+const generateSlugsForExistingTests = async (req, res, next) => {
+  try {
+    // Find all tests without slugs
+    const testsWithoutSlugs = await Test.find({ slug: { $exists: false } });
+    
+    let updatedCount = 0;
+    
+    for (const test of testsWithoutSlugs) {
+      if (test.title && test.title.tr) {
+        // Generate slug from Turkish title
+        let baseSlug = test.title.tr
+          .toLowerCase()
+          .replace(/ğ/g, 'g')
+          .replace(/ü/g, 'u')
+          .replace(/ş/g, 's')
+          .replace(/ı/g, 'i')
+          .replace(/ö/g, 'o')
+          .replace(/ç/g, 'c')
+          .replace(/[^a-z0-9\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-')
+          .replace(/^-+|-+$/g, '');
+        
+        let slug = baseSlug;
+        let counter = 1;
+        
+        // Check if slug already exists
+        while (await Test.findOne({ slug })) {
+          slug = `${baseSlug}-${counter}`;
+          counter++;
+        }
+        
+        // Update test with slug
+        test.slug = slug;
+        await test.save();
+        updatedCount++;
+      }
+    }
+    
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: `${updatedCount} test için slug oluşturuldu`,
+      updatedCount
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Export the migration function
+module.exports.generateSlugsForExistingTests = generateSlugsForExistingTests;
+
 
 
