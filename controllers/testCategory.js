@@ -261,11 +261,22 @@ const deleteTestCategory = async (req, res) => {
       throw new BadRequestError(`Bu kategori ${testsUsingCategory} test tarafından kullanılıyor. Önce bu testleri silin veya kategorilerini değiştirin.`);
     }
     
+    // Delete associated menu if exists
+    const Menu = require('../models/Menu');
+    const associatedMenu = await Menu.findOne({ testCategory: id });
+    
+    if (associatedMenu) {
+      console.log('Deleting associated menu:', associatedMenu._id);
+      await Menu.findByIdAndDelete(associatedMenu._id);
+      console.log('Associated menu deleted successfully');
+    }
+    
+    // Delete the test category
     await TestCategory.findByIdAndDelete(id);
     
     res.status(200).json({
       success: true,
-      message: 'Test kategorisi başarıyla silindi'
+      message: 'Test kategorisi ve ilişkili menü başarıyla silindi'
     });
   } catch (error) {
     if (error instanceof NotFoundError) {
