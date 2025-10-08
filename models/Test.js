@@ -74,11 +74,11 @@ const TestSchema = new mongoose.Schema({
     de: { type: String, default: '', trim: true },
     fr: { type: String, default: '', trim: true },
   },
-  category: { 
+  categories: [{ 
     type: String, 
-    required: [true, "Kategori gereklidir"],
+    required: [true, "En az bir kategori gereklidir"],
     trim: true
-  },
+  }],
   options: [OptionSchema],
   totalVotes: { 
     type: Number, 
@@ -124,7 +124,7 @@ const TestSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Index'ler
-TestSchema.index({ category: 1, isActive: 1 });
+TestSchema.index({ categories: 1, isActive: 1 });
 TestSchema.index({ createdAt: -1 });
 TestSchema.index({ totalVotes: -1 });
 TestSchema.index({ slug: 1 });
@@ -248,7 +248,7 @@ TestSchema.methods.resetVotes = function() {
 
 // Static method - Kategoriye göre testleri getir
 TestSchema.statics.getByCategory = function(category, limit = 10) {
-  return this.find({ category, isActive: true })
+  return this.find({ categories: category, isActive: true })
     .populate('createdBy', 'name surname')
     .sort({ totalVotes: -1 })
     .limit(limit);

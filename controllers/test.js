@@ -14,7 +14,7 @@ const createTest = async (req, res, next) => {
       coverImage,
       headerText,
       footerText,
-      category,
+      categories,
       trend,
       popular,
       endDate,
@@ -22,8 +22,8 @@ const createTest = async (req, res, next) => {
     } = req.body;
 
     // Validation
-    if (!title || !title.tr || !category) {
-      throw new CustomError.BadRequestError("Türkçe başlık ve kategori gereklidir");
+    if (!title || !title.tr || !categories || !Array.isArray(categories) || categories.length === 0) {
+      throw new CustomError.BadRequestError("Türkçe başlık ve en az bir kategori gereklidir");
     }
 
     if (!options || options.length < 2) {
@@ -51,7 +51,7 @@ const createTest = async (req, res, next) => {
       coverImage,
       headerText,
       footerText,
-      category,
+      categories,
       trend: trend || false,
       popular: popular || false,
       endDate: endDate ? new Date(endDate) : null,
@@ -66,25 +66,27 @@ const createTest = async (req, res, next) => {
     await user.createTest(test._id);
 
     // Send new vote notification to all users (async, don't wait)
-    // Get category info for notification
-    const categoryInfo = await TestCategory.findById(category);
-    if (categoryInfo) {
-      // Get all active users to send notification
-      const users = await User.find({ status: 'active', isVerified: true }).select('_id');
-      
-      // Send notification to each user (in batches to avoid overwhelming)
-      const batchSize = 100;
-      for (let i = 0; i < users.length; i += batchSize) {
-        const batch = users.slice(i, i + batchSize);
-        const notificationPromises = batch.map(user => 
-          sendNewVoteNotification(user._id, {
-            testId: test._id,
-            categoryId: categoryInfo._id,
-            categoryName: categoryInfo.name,
-            categorySlug: categoryInfo.slug
-          }).catch(console.error)
-        );
-        await Promise.all(notificationPromises);
+    // Get category info for notification - use first category for notification
+    if (categories && categories.length > 0) {
+      const categoryInfo = await TestCategory.findById(categories[0]);
+      if (categoryInfo) {
+        // Get all active users to send notification
+        const users = await User.find({ status: 'active', isVerified: true }).select('_id');
+        
+        // Send notification to each user (in batches to avoid overwhelming)
+        const batchSize = 100;
+        for (let i = 0; i < users.length; i += batchSize) {
+          const batch = users.slice(i, i + batchSize);
+          const notificationPromises = batch.map(user => 
+            sendNewVoteNotification(user._id, {
+              testId: test._id,
+              categoryId: categoryInfo._id,
+              categoryName: categoryInfo.name,
+              categorySlug: categoryInfo.slug
+            }).catch(console.error)
+          );
+          await Promise.all(notificationPromises);
+        }
       }
     }
 
@@ -119,7 +121,7 @@ const getAllTests = async (req, res, next) => {
     if (isActive !== undefined) {
       filter.isActive = isActive === 'true';
     }
-    if (category) filter.category = category;
+    if (category) filter.categories = category;
     if (search) {
       filter.$or = [
         { title: { $regex: search, $options: 'i' } },
@@ -379,7 +381,7 @@ const getTestResults = async (req, res, next) => {
         description: test.description,
         headerText: test.headerText,
         footerText: test.footerText,
-        category: test.category,
+        categories: test.categories,
         totalVotes: totalVotes,
         createdBy: test.createdBy,
         createdAt: test.createdAt
@@ -438,7 +440,7 @@ const getTestResultsBySlug = async (req, res, next) => {
         description: test.description,
         headerText: test.headerText,
         footerText: test.footerText,
-        category: test.category,
+        categories: test.categories,
         totalVotes: totalVotes,
         createdBy: test.createdBy,
         createdAt: test.createdAt
@@ -468,7 +470,7 @@ const getPopularTests = async (req, res, next) => {
     const { limit = 10, category } = req.query;
 
     const filter = { isActive: true, popular: true };
-    if (category) filter.category = category;
+    if (category) filter.categories = category;
 
     const tests = await Test.find(filter)
       .populate('createdBy', 'name surname')
@@ -483,7 +485,7 @@ const getPopularTests = async (req, res, next) => {
         title: test.title,
         description: test.description,
         coverImage: test.coverImage,
-        category: test.category,
+        categories: test.categories,
         totalVotes: test.totalVotes,
         createdBy: test.createdBy,
         topOption: test.topOption,
@@ -504,7 +506,7 @@ const getTestsByCategory = async (req, res, next) => {
     const skip = (page - 1) * limit;
 
     const tests = await Test.find({ 
-      category, 
+      categories: category, 
       isActive: true 
     })
       .populate('createdBy', 'name surname')
@@ -513,7 +515,7 @@ const getTestsByCategory = async (req, res, next) => {
       .limit(parseInt(limit));
 
     const total = await Test.countDocuments({ 
-      category, 
+      categories: category, 
       isActive: true 
     });
 
@@ -552,17 +554,16 @@ const getTestsByCategorySlug = async (req, res, next) => {
 
     // Bu kategoriye ait testleri getir (ObjectId ile)
     const tests = await Test.find({ 
-      category: category._id, 
+      categories: category._id, 
       isActive: true 
     })
       .populate('createdBy', 'name surname')
-      .populate('category', 'name slug')
       .sort({ totalVotes: -1, createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit));
 
     const total = await Test.countDocuments({ 
-      category: category._id, 
+      categories: category._id, 
       isActive: true 
     });
 
@@ -579,10 +580,7 @@ const getTestsByCategorySlug = async (req, res, next) => {
         title: test.title,
         description: test.description,
         coverImage: test.coverImage,
-        category: {
-          _id: category._id,
-          name: category.name
-        },
+        categories: test.categories,
         totalVotes: test.totalVotes,
         options: test.options,
         createdBy: test.createdBy,
@@ -618,7 +616,7 @@ const updateTest = async (req, res, next) => {
 
     // Güncellenebilir alanlar
     const allowedUpdates = [
-      'title', 'description', 'coverImage', 'headerText', 'footerText', 'category', 'isActive', 'trend', 'popular', 'endDate'
+      'title', 'description', 'coverImage', 'headerText', 'footerText', 'categories', 'isActive', 'trend', 'popular', 'endDate'
     ];
     
     allowedUpdates.forEach(field => {
@@ -779,7 +777,7 @@ const getUserVotedTests = async (req, res, next) => {
             slug: test.slug,
             title: test.title,
             description: test.description,
-            category: test.category,
+            categories: test.categories,
             coverImage: test.coverImage,
             totalVotes: test.totalVotes,
             createdBy: test.createdBy,
@@ -836,7 +834,7 @@ const getTrendTests = async (req, res, next) => {
         title: test.title,
         description: test.description,
         coverImage: test.coverImage,
-        category: test.category,
+        categories: test.categories,
         totalVotes: test.totalVotes,
         trend: test.trend,
         popular: test.popular,
@@ -855,7 +853,7 @@ const getGlobalRankings = async (req, res, next) => {
     const { category, limit = 50 } = req.query;
 
     const filter = { isActive: true };
-    if (category) filter.category = category;
+    if (category) filter.categories = category;
 
     // En popüler testleri getir
     const popularTests = await Test.find(filter)
@@ -866,9 +864,10 @@ const getGlobalRankings = async (req, res, next) => {
     // Kategori istatistikleri
     const categoryStats = await Test.aggregate([
       { $match: { isActive: true } },
+      { $unwind: '$categories' },
       {
         $group: {
-          _id: '$category',
+          _id: '$categories',
           totalTests: { $sum: 1 },
           totalVotes: { $sum: '$totalVotes' },
           avgVotes: { $avg: '$totalVotes' }
@@ -882,7 +881,7 @@ const getGlobalRankings = async (req, res, next) => {
       popularTests: popularTests.map(test => ({
         _id: test._id,
         title: test.title,
-        category: test.category,
+        categories: test.categories,
         totalVotes: test.totalVotes,
         createdBy: test.createdBy,
         topOption: test.topOption,
