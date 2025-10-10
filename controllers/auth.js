@@ -218,6 +218,7 @@ const login = async (req, res, next) => {
 //Get My Profile
 const getMyProfile = async (req, res, next) => {
   try {
+    console.log(req.user);
     const user = await User.findById(req.user.userId)
       .populate("profile")
       .populate("address");
