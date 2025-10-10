@@ -772,7 +772,8 @@ const getUserVotedTests = async (req, res, next) => {
       user.votedTests.map(async (vote) => {
         const test = await Test.findById(vote.test._id)
           .populate('createdBy', 'name surname')
-          .select('slug title description category coverImage totalVotes options createdAt');
+          .populate('categories', 'name slug')
+          .select('slug title description categories coverImage totalVotes options createdAt');
         
         if (!test) return null;
 
