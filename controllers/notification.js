@@ -191,9 +191,10 @@ const sendTestVotedNotification = async (userId, testData) => {
       icon: 'vote',
       color: 'green',
       priority: 'medium',
-      actionUrl: `/vote/${testData.testId}`,
+      actionUrl: testData.testSlug ? `/${testData.testSlug}` : `/vote/${testData.testId}`,
       metadata: {
-        testId: testData.testId
+        testId: testData.testId,
+        testSlug: testData.testSlug
       }
     };
 

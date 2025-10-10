@@ -142,7 +142,8 @@ const voteOnOption = async (req, res, next) => {
         if (user) {
           sendTestVotedNotification(userId, {
             testId: test._id,
-            testTitle: test.title
+            testTitle: test.title,
+            testSlug: test.slug
           }).catch(console.error);
         }
       } catch (error) {
