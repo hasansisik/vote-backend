@@ -148,7 +148,7 @@ NotificationSchema.statics.deleteNotification = async function(notificationId, u
 // Static method to get notification stats
 NotificationSchema.statics.getNotificationStats = async function(userId) {
   const stats = await this.aggregate([
-    { $match: { user: mongoose.Types.ObjectId(userId) } },
+    { $match: { user: new mongoose.Types.ObjectId(userId) } },
     {
       $group: {
         _id: null,
