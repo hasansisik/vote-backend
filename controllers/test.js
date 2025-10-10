@@ -191,8 +191,9 @@ const getSingleTest = async (req, res, next) => {
 const getSingleTestBySlug = async (req, res, next) => {
   try {
     const { slug } = req.params;
+    const { locale = 'tr' } = req.query; // Default to Turkish
 
-    const test = await Test.findBySlug(slug)
+    const test = await Test.findBySlug(slug, locale)
       .populate('voters.user', 'name surname');
 
     if (!test) {
@@ -285,12 +286,13 @@ const voteOnTestBySlug = async (req, res, next) => {
   try {
     const { slug } = req.params;
     const { optionId } = req.body;
+    const { locale = 'tr' } = req.query; // Default to Turkish
 
     if (!optionId) {
       throw new CustomError.BadRequestError("Seçenek ID gereklidir");
     }
 
-    const test = await Test.findBySlug(slug);
+    const test = await Test.findBySlug(slug, locale);
     if (!test) {
       throw new CustomError.NotFoundError("Test bulunamadı");
     }
@@ -410,8 +412,9 @@ const getTestResults = async (req, res, next) => {
 const getTestResultsBySlug = async (req, res, next) => {
   try {
     const { slug } = req.params;
+    const { locale = 'tr' } = req.query; // Default to Turkish
 
-    const test = await Test.findBySlug(slug);
+    const test = await Test.findBySlug(slug, locale);
 
     if (!test) {
       throw new CustomError.NotFoundError("Test bulunamadı");

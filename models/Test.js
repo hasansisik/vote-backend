@@ -46,11 +46,10 @@ const TestSchema = new mongoose.Schema({
     fr: { type: String, trim: true },
   },
   slug: {
-    type: String,
-    unique: true,
-    required: false,
-    trim: true,
-    lowercase: true
+    tr: { type: String, trim: true, lowercase: true },
+    en: { type: String, trim: true, lowercase: true },
+    de: { type: String, trim: true, lowercase: true },
+    fr: { type: String, trim: true, lowercase: true },
   },
   description: {
     tr: { type: String, default: '', trim: true },
@@ -140,22 +139,98 @@ const TestSchema = new mongoose.Schema({
 TestSchema.index({ categories: 1, isActive: 1 });
 TestSchema.index({ createdAt: -1 });
 TestSchema.index({ totalVotes: -1 });
-TestSchema.index({ slug: 1 });
+TestSchema.index({ 'slug.tr': 1 });
+TestSchema.index({ 'slug.en': 1 });
+TestSchema.index({ 'slug.de': 1 });
+TestSchema.index({ 'slug.fr': 1 });
 
 // Slug generation function
-const generateSlug = (title) => {
-  return title
-    .toLowerCase()
-    .replace(/ğ/g, 'g')
-    .replace(/ü/g, 'u')
-    .replace(/ş/g, 's')
-    .replace(/ı/g, 'i')
-    .replace(/ö/g, 'o')
-    .replace(/ç/g, 'c')
+const generateSlug = (title, language = 'tr') => {
+  if (!title) return '';
+  
+  let processedTitle = title.toLowerCase();
+  
+  // Language-specific character replacements
+  if (language === 'tr') {
+    processedTitle = processedTitle
+      .replace(/ğ/g, 'g')
+      .replace(/ü/g, 'u')
+      .replace(/ş/g, 's')
+      .replace(/ı/g, 'i')
+      .replace(/ö/g, 'o')
+      .replace(/ç/g, 'c')
+      .replace(/İ/g, 'i')
+      .replace(/Ğ/g, 'g')
+      .replace(/Ü/g, 'u')
+      .replace(/Ş/g, 's')
+      .replace(/Ö/g, 'o')
+      .replace(/Ç/g, 'c');
+  } else if (language === 'de') {
+    processedTitle = processedTitle
+      .replace(/ä/g, 'ae')
+      .replace(/ö/g, 'oe')
+      .replace(/ü/g, 'ue')
+      .replace(/ß/g, 'ss')
+      .replace(/Ä/g, 'ae')
+      .replace(/Ö/g, 'oe')
+      .replace(/Ü/g, 'ue');
+  } else if (language === 'fr') {
+    processedTitle = processedTitle
+      .replace(/à/g, 'a')
+      .replace(/á/g, 'a')
+      .replace(/â/g, 'a')
+      .replace(/ä/g, 'a')
+      .replace(/è/g, 'e')
+      .replace(/é/g, 'e')
+      .replace(/ê/g, 'e')
+      .replace(/ë/g, 'e')
+      .replace(/ì/g, 'i')
+      .replace(/í/g, 'i')
+      .replace(/î/g, 'i')
+      .replace(/ï/g, 'i')
+      .replace(/ò/g, 'o')
+      .replace(/ó/g, 'o')
+      .replace(/ô/g, 'o')
+      .replace(/ö/g, 'o')
+      .replace(/ù/g, 'u')
+      .replace(/ú/g, 'u')
+      .replace(/û/g, 'u')
+      .replace(/ü/g, 'u')
+      .replace(/ý/g, 'y')
+      .replace(/ÿ/g, 'y')
+      .replace(/ñ/g, 'n')
+      .replace(/ç/g, 'c')
+      .replace(/À/g, 'a')
+      .replace(/Á/g, 'a')
+      .replace(/Â/g, 'a')
+      .replace(/Ä/g, 'a')
+      .replace(/È/g, 'e')
+      .replace(/É/g, 'e')
+      .replace(/Ê/g, 'e')
+      .replace(/Ë/g, 'e')
+      .replace(/Ì/g, 'i')
+      .replace(/Í/g, 'i')
+      .replace(/Î/g, 'i')
+      .replace(/Ï/g, 'i')
+      .replace(/Ò/g, 'o')
+      .replace(/Ó/g, 'o')
+      .replace(/Ô/g, 'o')
+      .replace(/Ö/g, 'o')
+      .replace(/Ù/g, 'u')
+      .replace(/Ú/g, 'u')
+      .replace(/Û/g, 'u')
+      .replace(/Ü/g, 'u')
+      .replace(/Ý/g, 'y')
+      .replace(/Ÿ/g, 'y')
+      .replace(/Ñ/g, 'n')
+      .replace(/Ç/g, 'c');
+  }
+  
+  return processedTitle
     .replace(/[^a-z0-9\s-]/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
-    .trim('-');
+    .replace(/^-+|-+$/g, '');
 };
 
 // Virtual field - En popüler seçenek
@@ -168,23 +243,34 @@ TestSchema.virtual('topOption').get(function() {
 
 // Pre-save middleware - İstatistikleri güncelle, slug oluştur ve endDate kontrolü
 TestSchema.pre('save', async function(next) {
-  // Slug oluştur - slug yoksa, yeni test oluşturulurken veya title değiştiğinde
+  // Multilingual slug oluştur - slug yoksa, yeni test oluşturulurken veya title değiştiğinde
   if (!this.slug || this.isNew || this.isModified('title')) {
-    let baseSlug = generateSlug(this.title.tr);
-    let slug = baseSlug;
-    let counter = 1;
+    const languages = ['tr', 'en', 'de', 'fr'];
+    const newSlugs = {};
     
-    // Aynı slug varsa sayı ekle
-    while (true) {
-      const existingTest = await this.constructor.findOne({ slug });
-      if (!existingTest || existingTest._id.toString() === this._id.toString()) {
-        break;
+    for (const lang of languages) {
+      if (this.title[lang]) {
+        let baseSlug = generateSlug(this.title[lang], lang);
+        let slug = baseSlug;
+        let counter = 1;
+        
+        // Aynı slug varsa sayı ekle
+        while (true) {
+          const existingTest = await this.constructor.findOne({ 
+            [`slug.${lang}`]: slug 
+          });
+          if (!existingTest || existingTest._id.toString() === this._id.toString()) {
+            break;
+          }
+          slug = `${baseSlug}-${counter}`;
+          counter++;
+        }
+        
+        newSlugs[lang] = slug;
       }
-      slug = `${baseSlug}-${counter}`;
-      counter++;
     }
     
-    this.slug = slug;
+    this.slug = newSlugs;
   }
   
   if (this.options && this.options.length > 0) {
@@ -295,9 +381,9 @@ TestSchema.statics.updateExpiredTests = async function() {
   );
 };
 
-// Static method - Slug'a göre test bul
-TestSchema.statics.findBySlug = function(slug) {
-  return this.findOne({ slug }).populate('createdBy', 'name surname');
+// Static method - Slug'a göre test bul (multilingual)
+TestSchema.statics.findBySlug = function(slug, language = 'tr') {
+  return this.findOne({ [`slug.${language}`]: slug }).populate('createdBy', 'name surname');
 };
 
 // Method - Vote session başlat
