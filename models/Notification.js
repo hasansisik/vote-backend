@@ -57,6 +57,7 @@ const NotificationSchema = new mongoose.Schema(
     // Additional data for specific notification types
     metadata: {
       testId: { type: mongoose.Schema.Types.ObjectId, ref: 'Test' },
+      testSlug: { type: String },
       categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'TestCategory' },
       voteCount: { type: Number },
       stats: {
@@ -101,7 +102,7 @@ NotificationSchema.statics.getUserNotifications = async function(userId, options
   const skip = (page - 1) * limit;
 
   const notifications = await this.find(filter)
-    .populate('metadata.testId', 'title category')
+    .populate('metadata.testId', 'title category slug')
     .populate('metadata.categoryId', 'name slug')
     .sort({ createdAt: -1 })
     .skip(skip)
