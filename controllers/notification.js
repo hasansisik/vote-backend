@@ -159,18 +159,47 @@ const sendProfileUpdateNotification = async (userId) => {
 // Send New Vote Notification
 const sendNewVoteNotification = async (userId, testData) => {
   try {
+    // Kategori adını al - eğer testData'da yoksa TestCategory modelinden çek
+    let categoryName = testData.categoryName;
+    
+    if (!categoryName && testData.categoryId) {
+      const TestCategory = require('../models/TestCategory');
+      const category = await TestCategory.findById(testData.categoryId).select('name');
+      if (category) {
+        categoryName = category.name; // Keep full multi-language object
+      }
+    }
+    
+    // Eğer hala kategori adı yoksa, test'ten kategori bilgisini al
+    if (!categoryName && testData.testId) {
+      const Test = require('../models/Test').Test;
+      const test = await Test.findById(testData.testId).select('categories');
+      if (test && test.categories && test.categories.length > 0) {
+        categoryName = test.categories[0]; // İlk kategoriyi al
+      }
+    }
+    
+    // Fallback olarak categoryName yoksa varsayılan değer
+    if (!categoryName) {
+      categoryName = { tr: 'Bilinmeyen Kategori', en: 'Unknown Category', de: 'Unbekannte Kategorie', fr: 'Catégorie Inconnue' };
+    }
+    
+    // For message display, use Turkish as default
+    const displayCategoryName = typeof categoryName === 'object' ? (categoryName.tr || categoryName.en || 'Bilinmeyen Kategori') : categoryName;
+
     const notificationData = {
       user: userId,
       type: 'new_vote',
       title: 'Yeni Oylama',
-      message: `"${testData.categoryName}" kategorisinde yeni bir oylama başladı!`,
+      message: `"${displayCategoryName}" kategorisinde yeni bir oylama başladı!`,
       icon: 'vote',
       color: 'blue',
       priority: 'high',
-      actionUrl: `/kategori/${testData.categorySlug}`,
+      actionUrl: testData.categorySlug ? `/kategori/${testData.categorySlug}` : '/',
       metadata: {
         testId: testData.testId,
-        categoryId: testData.categoryId
+        categoryId: testData.categoryId,
+        categoryName: categoryName // Frontend için categoryName'i metadata'ya ekle
       }
     };
 
@@ -183,18 +212,38 @@ const sendNewVoteNotification = async (userId, testData) => {
 // Send Test Voted Notification
 const sendTestVotedNotification = async (userId, testData) => {
   try {
+    // Test başlığını al - eğer testData'da yoksa Test modelinden çek
+    let testTitle = testData.testTitle;
+    
+    if (!testTitle && testData.testId) {
+      const Test = require('../models/Test').Test;
+      const test = await Test.findById(testData.testId).select('title');
+      if (test) {
+        testTitle = test.title; // Keep full multi-language object
+      }
+    }
+    
+    // Fallback olarak testTitle yoksa varsayılan değer
+    if (!testTitle) {
+      testTitle = { tr: 'Bilinmeyen Test', en: 'Unknown Test', de: 'Unbekannter Test', fr: 'Test Inconnu' };
+    }
+    
+    // For message display, use Turkish as default
+    const displayTitle = typeof testTitle === 'object' ? (testTitle.tr || testTitle.en || 'Bilinmeyen Test') : testTitle;
+
     const notificationData = {
       user: userId,
       type: 'test_voted',
       title: 'Oylama Tamamlandı',
-      message: `"${testData.testTitle}" oylamasını tamamladınız.`,
+      message: `"${displayTitle}" oylamasını tamamladınız.`,
       icon: 'vote',
       color: 'green',
       priority: 'medium',
       actionUrl: testData.testSlug ? `/${testData.testSlug}` : `/vote/${testData.testId}`,
       metadata: {
         testId: testData.testId,
-        testSlug: testData.testSlug
+        testSlug: testData.testSlug,
+        testTitle: testTitle // Frontend için testTitle'ı metadata'ya ekle
       }
     };
 

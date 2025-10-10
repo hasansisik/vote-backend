@@ -81,7 +81,7 @@ const createTest = async (req, res, next) => {
             sendNewVoteNotification(user._id, {
               testId: test._id,
               categoryId: categoryInfo._id,
-              categoryName: categoryInfo.name.tr, // Use Turkish name for notification
+              categoryName: categoryInfo.name, // Send full multi-language object
               categorySlug: categoryInfo.slug
             }).catch(console.error)
           );
@@ -257,7 +257,8 @@ const voteOnTest = async (req, res, next) => {
         // Send test voted notification (async, don't wait)
         sendTestVotedNotification(userId, {
           testId: test._id,
-          testTitle: test.title
+          testTitle: test.title, // Send full multi-language object
+          testSlug: test.slug
         }).catch(console.error);
       }
     }
@@ -322,7 +323,8 @@ const voteOnTestBySlug = async (req, res, next) => {
         // Send test voted notification (async, don't wait)
         sendTestVotedNotification(userId, {
           testId: test._id,
-          testTitle: test.title
+          testTitle: test.title, // Send full multi-language object
+          testSlug: test.slug
         }).catch(console.error);
       }
     }

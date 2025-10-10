@@ -142,7 +142,7 @@ const voteOnOption = async (req, res, next) => {
         if (user) {
           sendTestVotedNotification(userId, {
             testId: test._id,
-            testTitle: test.title,
+            testTitle: test.title, // Send full multi-language object
             testSlug: test.slug
           }).catch(console.error);
         }
