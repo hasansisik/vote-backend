@@ -12,15 +12,11 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/vote-app'
 
 async function updateNotifications() {
   try {
-    console.log('Bildirimler güncelleniyor...');
-
     // Test voted notifications'ları güncelle
     const testVotedNotifications = await Notification.find({ 
       type: 'test_voted',
       'metadata.testId': { $exists: true }
     });
-
-    console.log(`${testVotedNotifications.length} test voted bildirimi bulundu`);
 
     for (const notification of testVotedNotifications) {
       try {
@@ -39,7 +35,6 @@ async function updateNotifications() {
           notification.metadata.testSlug = test.slug;
           
           await notification.save();
-          console.log(`Test bildirimi güncellendi: ${testTitle}`);
         }
       } catch (error) {
         console.error(`Test bildirimi güncellenirken hata: ${error.message}`);
@@ -52,7 +47,6 @@ async function updateNotifications() {
       'metadata.categoryId': { $exists: true }
     });
 
-    console.log(`${newVoteNotifications.length} new vote bildirimi bulundu`);
 
     for (const notification of newVoteNotifications) {
       try {
@@ -71,7 +65,6 @@ async function updateNotifications() {
           notification.metadata.categorySlug = category.slug;
           
           await notification.save();
-          console.log(`Kategori bildirimi güncellendi: ${categoryName}`);
         }
       } catch (error) {
         console.error(`Kategori bildirimi güncellenirken hata: ${error.message}`);
@@ -88,7 +81,6 @@ async function updateNotifications() {
       if (notification.message.includes('"Test"')) {
         notification.message = `"${notification.metadata.testTitle}" oylamasını tamamladınız.`;
         await notification.save();
-        console.log(`Test title ile bildirim güncellendi: ${notification.metadata.testTitle}`);
       }
     }
 
@@ -102,11 +94,9 @@ async function updateNotifications() {
       if (notification.message.includes('"Kategori"')) {
         notification.message = `"${notification.metadata.categoryName}" kategorisinde yeni bir oylama başladı!`;
         await notification.save();
-        console.log(`Kategori name ile bildirim güncellendi: ${notification.metadata.categoryName}`);
       }
     }
 
-    console.log('Bildirimler başarıyla güncellendi!');
     
   } catch (error) {
     console.error('Bildirimler güncellenirken hata:', error);
