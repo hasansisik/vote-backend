@@ -123,7 +123,7 @@ const sendWelcomeNotification = async (userId) => {
       user: userId,
       type: 'welcome',
       title: 'Hoş Geldiniz!',
-      message: 'Sisteme katıldığınız için hoş geldiniz. İlk oylamanızı yapmaya başlayın!',
+      message: 'Hoş geldiniz! İlk oylamanızı yaparak topluluğumuza katkınızı gösterin.',
       icon: 'welcome',
       color: 'green',
       priority: 'high',
