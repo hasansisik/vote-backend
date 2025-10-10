@@ -40,7 +40,7 @@ const register = async (req, res, next) => {
     // Create Profile document
     const profile = new Profile({
       picture:
-        picture || "https://res.cloudinary.com/da2qwsrbv/image/upload/v1757687384/sj3lcvvd7mjuuwpzann8.png",
+        picture || "https://res.cloudinary.com/da2qwsrbv/image/upload/v1760109069/vote-logo_ngail2.png",
     });
     await profile.save();
 
@@ -202,7 +202,7 @@ const login = async (req, res, next) => {
         email: user.email,
         picture:
           user.profile?.picture ||
-          "https://res.cloudinary.com/da2qwsrbv/image/upload/v1757687384/sj3lcvvd7mjuuwpzann8.png",
+          "https://res.cloudinary.com/da2qwsrbv/image/upload/v1760109069/vote-logo_ngail2.png",
         profile: user.profile, // Add full profile object
         status: user.status,
         courseTrial: user.courseTrial,
@@ -639,24 +639,75 @@ const editProfile = async (req, res) => {
 
 //Email
 const verifyEmail = async (req, res) => {
-  const { email, verificationCode } = req.body;
-  const user = await User.findOne({ email }).populate("auth");
+  try {
+    const { email, verificationCode } = req.body;
+    const user = await User.findOne({ email })
+      .populate("auth")
+      .populate("profile");
 
-  if (!user) {
-    return res.status(400).json({ message: "Kullanıcı bulunamadı." });
+    if (!user) {
+      return res.status(400).json({ message: "Kullanıcı bulunamadı." });
+    }
+
+    if (user.auth.verificationCode !== Number(verificationCode)) {
+      return res.status(400).json({ message: "Doğrulama kodu yanlış." });
+    }
+
+    user.isVerified = true;
+    user.status = 'active';
+    user.auth.verificationCode = undefined;
+    await user.save();
+    await user.auth.save();
+
+    // Generate tokens like login
+    const accessToken = await generateToken(
+      { userId: user._id, role: user.role },
+      "7d",
+      process.env.ACCESS_TOKEN_SECRET
+    );
+    const refreshToken = await generateToken(
+      { userId: user._id, role: user.role },
+      "7d",
+      process.env.REFRESH_TOKEN_SECRET
+    );
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      path: "/v1/auth/refreshtoken",
+      maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
+    });
+
+    const token = new Token({
+      refreshToken,
+      accessToken,
+      ip: req.ip,
+      userAgent: req.headers["user-agent"],
+      user: user._id,
+    });
+
+    await token.save();
+
+    res.json({
+      message: "Hesap başarıyla doğrulandı.",
+      user: {
+        _id: user._id,
+        name: user.name,
+        surname: user.surname,
+        email: user.email,
+        picture:
+          user.profile?.picture ||
+          "https://res.cloudinary.com/da2qwsrbv/image/upload/v1760109069/vote-logo_ngail2.png",
+        profile: user.profile,
+        status: user.status,
+        courseTrial: user.courseTrial,
+        theme: user.theme,
+        isVerified: user.isVerified,
+        token: accessToken,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Sunucu hatası." });
   }
-
-  if (user.auth.verificationCode !== Number(verificationCode)) {
-    return res.status(400).json({ message: "Doğrulama kodu yanlış." });
-  }
-
-  user.isVerified = true;
-  user.status = 'active';
-  user.auth.verificationCode = undefined;
-  await user.save();
-  await user.auth.save();
-
-  res.json({ message: "Hesap başarıyla doğrulandı." });
 };
 
 //Again Email
@@ -745,7 +796,7 @@ const googleAuth = async (req, res, next) => {
 
       // Create Profile document
       const profile = new Profile({
-        picture: "https://res.cloudinary.com/da2qwsrbv/image/upload/v1757687384/sj3lcvvd7mjuuwpzann8.png",
+        picture: "https://res.cloudinary.com/da2qwsrbv/image/upload/v1760109069/vote-logo_ngail2.png",
       });
       await profile.save();
 
@@ -822,7 +873,7 @@ const googleAuth = async (req, res, next) => {
         name: user.name,
         surname: user.surname,
         email: user.email,
-        picture: user.profile?.picture || picture || "https://res.cloudinary.com/da2qwsrbv/image/upload/v1757687384/sj3lcvvd7mjuuwpzann8.png",
+        picture: user.profile?.picture || picture || "https://res.cloudinary.com/da2qwsrbv/image/upload/v1760109069/vote-logo_ngail2.png",
         profile: user.profile, // Add full profile object
         status: user.status,
         courseTrial: user.courseTrial,
@@ -900,7 +951,7 @@ const googleLogin = async (req, res, next) => {
         name: user.name,
         surname: user.surname,
         email: user.email,
-        picture: user.profile?.picture || picture || "https://res.cloudinary.com/da2qwsrbv/image/upload/v1757687384/sj3lcvvd7mjuuwpzann8.png",
+        picture: user.profile?.picture || picture || "https://res.cloudinary.com/da2qwsrbv/image/upload/v1760109069/vote-logo_ngail2.png",
         profile: user.profile, // Add full profile object
         status: user.status,
         courseTrial: user.courseTrial,
@@ -940,7 +991,7 @@ const googleRegister = async (req, res, next) => {
 
     // Create Profile document
     const profile = new Profile({
-      picture: picture || "https://res.cloudinary.com/da2qwsrbv/image/upload/v1757687384/sj3lcvvd7mjuuwpzann8.png",
+      picture: picture || "https://res.cloudinary.com/da2qwsrbv/image/upload/v1760109069/vote-logo_ngail2.png",
     });
     await profile.save();
 
