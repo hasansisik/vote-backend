@@ -99,7 +99,7 @@ const getTestCategory = async (req, res) => {
 // Create test category (Admin only)
 const createTestCategory = async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name, description, htmlContent } = req.body;
     
     
     if (!name || !name.tr) {
@@ -134,6 +134,12 @@ const createTestCategory = async (req, res) => {
         de: description?.de || '',
         fr: description?.fr || '',
       },
+      htmlContent: {
+        tr: htmlContent?.tr || '',
+        en: htmlContent?.en || '',
+        de: htmlContent?.de || '',
+        fr: htmlContent?.fr || '',
+      },
       slug
     };
     
@@ -165,7 +171,7 @@ const createTestCategory = async (req, res) => {
 const updateTestCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description } = req.body;
+    const { name, description, htmlContent } = req.body;
     
     const category = await TestCategory.findById(id);
     if (!category) {
@@ -209,6 +215,14 @@ const updateTestCategory = async (req, res) => {
       if (description.en !== undefined) category.description.en = description.en;
       if (description.de !== undefined) category.description.de = description.de;
       if (description.fr !== undefined) category.description.fr = description.fr;
+    }
+    
+    // Update htmlContent fields
+    if (htmlContent) {
+      if (htmlContent.tr !== undefined) category.htmlContent.tr = htmlContent.tr;
+      if (htmlContent.en !== undefined) category.htmlContent.en = htmlContent.en;
+      if (htmlContent.de !== undefined) category.htmlContent.de = htmlContent.de;
+      if (htmlContent.fr !== undefined) category.htmlContent.fr = htmlContent.fr;
     }
     
     await category.save();

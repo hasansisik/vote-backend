@@ -33,7 +33,7 @@ const getEnabledLanguages = async (req, res, next) => {
 // Update System Settings (Admin only)
 const updateSettings = async (req, res, next) => {
   try {
-    const { languages, general } = req.body;
+    const { languages, general, homePageHtmlContent } = req.body;
 
     let settings = await Settings.findById("system");
 
@@ -94,6 +94,14 @@ const updateSettings = async (req, res, next) => {
         settings.general.siteDescription = general.siteDescription;
       if (typeof general.maintenanceMode === "boolean")
         settings.general.maintenanceMode = general.maintenanceMode;
+    }
+
+    // Update homePageHtmlContent if provided
+    if (homePageHtmlContent) {
+      if (homePageHtmlContent.tr !== undefined) settings.homePageHtmlContent.tr = homePageHtmlContent.tr;
+      if (homePageHtmlContent.en !== undefined) settings.homePageHtmlContent.en = homePageHtmlContent.en;
+      if (homePageHtmlContent.de !== undefined) settings.homePageHtmlContent.de = homePageHtmlContent.de;
+      if (homePageHtmlContent.fr !== undefined) settings.homePageHtmlContent.fr = homePageHtmlContent.fr;
     }
 
     // Track who updated

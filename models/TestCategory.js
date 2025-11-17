@@ -14,6 +14,12 @@ const TestCategorySchema = new mongoose.Schema({
     de: { type: String, default: '', trim: true },
     fr: { type: String, default: '', trim: true },
   },
+  htmlContent: {
+    tr: { type: String, default: '' },
+    en: { type: String, default: '' },
+    de: { type: String, default: '' },
+    fr: { type: String, default: '' },
+  },
   slug: {
     type: String,
     required: true,

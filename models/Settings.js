@@ -33,7 +33,7 @@ const SettingsSchema = new mongoose.Schema(
       ],
       defaultLanguage: {
         type: String,
-        default: "tr",
+        default: "en",
         enum: ["tr", "en", "de", "fr"],
       },
     },
@@ -51,6 +51,13 @@ const SettingsSchema = new mongoose.Schema(
         type: Boolean,
         default: false,
       },
+    },
+    // Anasayfa HTML içeriği (çoklu dil desteği ile)
+    homePageHtmlContent: {
+      tr: { type: String, default: '' },
+      en: { type: String, default: '' },
+      de: { type: String, default: '' },
+      fr: { type: String, default: '' },
     },
     // Güncelleme bilgisi
     lastUpdatedBy: {
@@ -76,7 +83,7 @@ SettingsSchema.statics.getSystemSettings = async function () {
           { code: "de", name: "Deutsch", flag: "🇩🇪", enabled: true },
           { code: "fr", name: "Français", flag: "🇫🇷", enabled: true },
         ],
-        defaultLanguage: "tr",
+        defaultLanguage: "en",
       },
     });
   }

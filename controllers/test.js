@@ -579,7 +579,13 @@ const getTestsByCategorySlug = async (req, res, next) => {
       category: {
         _id: category._id,
         name: category.name,
-        slug: category.slug
+        slug: category.slug,
+        htmlContent: category.htmlContent || {
+          tr: '',
+          en: '',
+          de: '',
+          fr: ''
+        }
       },
       tests: tests.map(test => ({
         _id: test._id,
