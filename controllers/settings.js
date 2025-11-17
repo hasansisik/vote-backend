@@ -30,6 +30,20 @@ const getEnabledLanguages = async (req, res, next) => {
   }
 };
 
+// Get Home Page HTML Content (Public endpoint)
+const getHomePageHtmlContent = async (req, res, next) => {
+  try {
+    const settings = await Settings.getSystemSettings();
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      homePageHtmlContent: settings.homePageHtmlContent || {},
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Update System Settings (Admin only)
 const updateSettings = async (req, res, next) => {
   try {
@@ -217,6 +231,7 @@ const updateDefaultLanguage = async (req, res, next) => {
 module.exports = {
   getSettings,
   getEnabledLanguages,
+  getHomePageHtmlContent,
   updateSettings,
   toggleLanguage,
   updateDefaultLanguage,

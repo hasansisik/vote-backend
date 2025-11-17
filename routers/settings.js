@@ -2,6 +2,7 @@ const express = require('express');
 const {
   getSettings,
   getEnabledLanguages,
+  getHomePageHtmlContent,
   updateSettings,
   toggleLanguage,
   updateDefaultLanguage,
@@ -12,6 +13,7 @@ const router = express.Router();
 
 // Public routes
 router.get('/languages', getEnabledLanguages);
+router.get('/homepage-content', getHomePageHtmlContent);
 
 // Admin only routes
 router.get('/', isAuthenticated, isAdmin, getSettings);
