@@ -187,6 +187,12 @@ const sendNewVoteNotification = async (userId, testData) => {
     // For message display, use Turkish as default
     const displayCategoryName = typeof categoryName === 'object' ? (categoryName.tr || categoryName.en || 'Bilinmeyen Kategori') : categoryName;
 
+    // Category slug'ı string'e çevir - eğer obje ise Turkish slug'ı kullan
+    let categorySlugString = testData.categorySlug;
+    if (categorySlugString && typeof categorySlugString === 'object') {
+      categorySlugString = categorySlugString.tr || categorySlugString.en || Object.values(categorySlugString)[0] || null;
+    }
+
     const notificationData = {
       user: userId,
       type: 'new_vote',
@@ -195,7 +201,7 @@ const sendNewVoteNotification = async (userId, testData) => {
       icon: 'vote',
       color: 'blue',
       priority: 'high',
-      actionUrl: testData.categorySlug ? `/kategori/${testData.categorySlug}` : '/',
+      actionUrl: categorySlugString ? `/kategori/${categorySlugString}` : '/',
       metadata: {
         testId: testData.testId,
         categoryId: testData.categoryId,
@@ -231,6 +237,12 @@ const sendTestVotedNotification = async (userId, testData) => {
     // For message display, use Turkish as default
     const displayTitle = typeof testTitle === 'object' ? (testTitle.tr || testTitle.en || 'Bilinmeyen Test') : testTitle;
 
+    // Slug'ı string'e çevir - eğer obje ise Turkish slug'ı kullan
+    let testSlugString = testData.testSlug;
+    if (testSlugString && typeof testSlugString === 'object') {
+      testSlugString = testSlugString.tr || testSlugString.en || Object.values(testSlugString)[0] || null;
+    }
+
     const notificationData = {
       user: userId,
       type: 'test_voted',
@@ -239,10 +251,10 @@ const sendTestVotedNotification = async (userId, testData) => {
       icon: 'vote',
       color: 'green',
       priority: 'medium',
-      actionUrl: testData.testSlug ? `/${testData.testSlug}` : `/vote/${testData.testId}`,
+      actionUrl: testSlugString ? `/${testSlugString}` : `/vote/${testData.testId}`,
       metadata: {
         testId: testData.testId,
-        testSlug: testData.testSlug,
+        testSlug: testData.testSlug, // Keep full object for frontend
         testTitle: testTitle // Frontend için testTitle'ı metadata'ya ekle
       }
     };
