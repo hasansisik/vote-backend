@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 // Option Schema - Test seçenekleri için
 const OptionSchema = new mongoose.Schema({
   title: {
-    tr: { type: String, required: [true, "Türkçe seçenek başlığı gereklidir"], trim: true },
-    en: { type: String, trim: true },
+    tr: { type: String, trim: true },
+    en: { type: String, required: [true, "English option title is required"], trim: true },
     de: { type: String, trim: true },
     fr: { type: String, trim: true },
   },
@@ -40,8 +40,8 @@ const OptionSchema = new mongoose.Schema({
 // Test Schema
 const TestSchema = new mongoose.Schema({
   title: {
-    tr: { type: String, required: [true, "Türkçe test başlığı gereklidir"], trim: true },
-    en: { type: String, trim: true },
+    tr: { type: String, trim: true },
+    en: { type: String, required: [true, "English test title is required"], trim: true },
     de: { type: String, trim: true },
     fr: { type: String, trim: true },
   },

@@ -1,8 +1,10 @@
 const { TestCategory } = require('../models/TestCategory');
 const { BadRequestError, NotFoundError } = require('../errors');
 
-// Helper function to generate slug from Turkish text
+// Helper function to generate slug from text (works for any language)
 const generateSlug = (text) => {
+  if (!text) return '';
+  
   const turkishChars = {
     'ç': 'c', 'ğ': 'g', 'ı': 'i', 'ö': 'o', 'ş': 's', 'ü': 'u',
     'Ç': 'C', 'Ğ': 'G', 'İ': 'I', 'Ö': 'O', 'Ş': 'S', 'Ü': 'U'
@@ -102,17 +104,17 @@ const createTestCategory = async (req, res) => {
     const { name, description, htmlContent } = req.body;
     
     
-    if (!name || !name.tr) {
-      throw new BadRequestError('Türkçe kategori adı gereklidir');
+    if (!name || !name.en) {
+      throw new BadRequestError('English category name is required');
     }
     
-    // Generate slug from Turkish name
-    const slug = generateSlug(name.tr);
+    // Generate slug from English name
+    const slug = generateSlug(name.en);
     
     // Check if category with same name or slug already exists
     const existingCategory = await TestCategory.findOne({
       $or: [
-        { 'name.tr': name.tr },
+        { 'name.en': name.en },
         { slug }
       ]
     });
@@ -123,10 +125,10 @@ const createTestCategory = async (req, res) => {
     
     const categoryData = {
       name: {
-        tr: name.tr,
-        en: name.en || name.tr, // Fallback to Turkish if not provided
-        de: name.de || name.tr, // Fallback to Turkish if not provided
-        fr: name.fr || name.tr, // Fallback to Turkish if not provided
+        tr: name.tr || name.en, // Fallback to English if not provided
+        en: name.en,
+        de: name.de || name.en, // Fallback to English if not provided
+        fr: name.fr || name.en, // Fallback to English if not provided
       },
       description: {
         tr: description?.tr || '',
@@ -180,6 +182,11 @@ const updateTestCategory = async (req, res) => {
     
     // Update name fields
     if (name) {
+      // Check if English name is provided (required)
+      if (name.en !== undefined && !name.en) {
+        throw new BadRequestError('English category name is required');
+      }
+      
       // Check if any name is being changed
       const nameChanged = name.tr !== category.name.tr || 
                          name.en !== category.name.en || 
@@ -187,24 +194,26 @@ const updateTestCategory = async (req, res) => {
                          name.fr !== category.name.fr;
       
       if (nameChanged) {
-        // Check if new Turkish name already exists
-        const existingCategory = await TestCategory.findOne({
-          _id: { $ne: id },
-          'name.tr': name.tr
-        });
-        
-        if (existingCategory) {
-          throw new BadRequestError('Bu isimde başka bir kategori zaten mevcut');
+        // Check if new English name already exists
+        if (name.en && name.en !== category.name.en) {
+          const existingCategory = await TestCategory.findOne({
+            _id: { $ne: id },
+            'name.en': name.en
+          });
+          
+          if (existingCategory) {
+            throw new BadRequestError('Bu isimde başka bir kategori zaten mevcut');
+          }
         }
         
         // Update names
-        if (name.tr) category.name.tr = name.tr;
-        if (name.en) category.name.en = name.en;
-        if (name.de) category.name.de = name.de;
-        if (name.fr) category.name.fr = name.fr;
+        if (name.tr !== undefined) category.name.tr = name.tr || category.name.en;
+        if (name.en !== undefined) category.name.en = name.en;
+        if (name.de !== undefined) category.name.de = name.de || category.name.en;
+        if (name.fr !== undefined) category.name.fr = name.fr || category.name.en;
         
-        // Generate new slug from Turkish name
-        const newSlug = generateSlug(name.tr);
+        // Generate new slug from English name
+        const newSlug = generateSlug(name.en || category.name.en);
         category.slug = newSlug;
       }
     }

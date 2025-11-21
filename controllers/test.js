@@ -22,8 +22,8 @@ const createTest = async (req, res, next) => {
     } = req.body;
 
     // Validation
-    if (!title || !title.tr || !categories || !Array.isArray(categories) || categories.length === 0) {
-      throw new CustomError.BadRequestError("Türkçe başlık ve en az bir kategori gereklidir");
+    if (!title || !title.en || !categories || !Array.isArray(categories) || categories.length === 0) {
+      throw new CustomError.BadRequestError("English title and at least one category are required");
     }
 
     if (!options || options.length < 2) {
@@ -32,15 +32,15 @@ const createTest = async (req, res, next) => {
 
     // Her seçenek için validation
     for (let option of options) {
-      if (!option.title || !option.title.tr || !option.image) {
-        throw new CustomError.BadRequestError("Her seçenek için Türkçe başlık ve görsel gereklidir");
+      if (!option.title || !option.title.en || !option.image) {
+        throw new CustomError.BadRequestError("Her seçenek için İngilizce başlık ve görsel gereklidir");
       }
       
       // Custom fields validation - sadece dolu olanları kontrol et
       if (option.customFields && Array.isArray(option.customFields)) {
         option.customFields = option.customFields.filter(field => 
-          field.fieldName && field.fieldName.tr && field.fieldValue && field.fieldValue.tr && 
-          field.fieldName.tr.trim() !== '' && field.fieldValue.tr.trim() !== ''
+          field.fieldName && field.fieldName.en && field.fieldValue && field.fieldValue.en && 
+          field.fieldName.en.trim() !== '' && field.fieldValue.en.trim() !== ''
         );
       }
     }
@@ -658,8 +658,8 @@ const updateTest = async (req, res, next) => {
         // Custom fields validation - sadece dolu olanları al
         const cleanedCustomFields = newOption.customFields && Array.isArray(newOption.customFields) 
           ? newOption.customFields.filter(field => 
-              field.fieldName && field.fieldName.tr && field.fieldValue && field.fieldValue.tr && 
-              field.fieldName.tr.trim() !== '' && field.fieldValue.tr.trim() !== ''
+              field.fieldName && field.fieldName.en && field.fieldValue && field.fieldValue.en && 
+              field.fieldName.en.trim() !== '' && field.fieldValue.en.trim() !== ''
             )
           : [];
         
